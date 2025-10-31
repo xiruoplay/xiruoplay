@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>xiruoplay | 主页</title>
+  <meta name="description" content="xiruoplay 的学术/个人主页：关于我、新闻、论文、荣誉、教育、研究经历等。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#ffffff;--text:#0f172a;--muted:#5b5b66;--primary:#7c3aed;--card:#faf5ff;--border:#ede9fe}
+    @media(prefers-color-scheme:dark){:root{--bg:#0b0a16;--text:#e9e7ff;--muted:#b5b3c9;--primary:#a78bfa;--card:#141326;--border:#2a2640}}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    a{color:var(--primary);text-decoration:none}
+    img{max-width:100%;display:block}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+    header{position:sticky;top:0;z-index:10;background:color-mix(in srgb, var(--bg) 85%, transparent);backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;gap:18px;padding:12px 0}
+    .nav .brand{font-weight:700}
+    .nav ul{display:flex;gap:14px;list-style:none;margin:0;padding:0}
+    main{display:grid;grid-template-columns:320px 1fr;gap:28px;padding:24px 0}
+    @media(max-width:900px){main{grid-template-columns:1fr}}
+    /* 左侧侧栏 */
+    .sidebar{position:sticky;top:64px;align-self:start}
+    .avatar{border-radius:16px;overflow:hidden;border:1px solid var(--border);background:var(--card);width:100%;aspect-ratio:1/1;}
+    .name{font-size:28px;font-weight:800;margin:14px 0 6px}
+    .title{color:var(--muted);margin:0 0 10px}
+    .meta{display:grid;gap:8px;margin:12px 0}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:var(--card);font-size:14px}
+    /* 右侧主体 */
+    section{padding:18px 0;border-bottom:1px solid var(--border)}
+    section:last-child{border-bottom:none}
+    h2{margin:0 0 10px;font-size:22px}
+    .list{display:grid;gap:10px}
+    .item{padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--card)}
+    .item .title{font-weight:600}
+    .item .sub{color:var(--muted);font-size:14px;margin-top:4px}
+    .news ul{margin:0;padding-left:18px}
+    .news li{margin:6px 0}
+    .pub-grid{display:grid;grid-template-columns:120px 1fr;gap:12px}
+    .thumb{width:120px;height:80px;border-radius:8px;background:var(--border)}
+    footer{padding:24px 0 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--border);margin-top:10px}
+    .toc{display:flex;flex-wrap:wrap;gap:10px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand">xiruoplay</div>
+      <nav>
+        <ul class="toc">
+          <li><a href="#about">About Me</a></li>
+          <li><a href="#news">News</a></li>
+          <li><a href="#pubs">Publications</a></li>
+          <li><a href="#awards">Honors & Awards</a></li>
+          <li><a href="#edu">Educations</a></li>
+          <li><a href="#exp">Research Experience</a></li>
+          <li><a href="#talks">Invited Talks</a></li>
+          <li><a href="#intern">Internships</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- 左侧：个人卡片 -->
+    <aside class="sidebar" id="about">
+      <img class="avatar" src="https://github.com/xiruoplay.png" alt="avatar"/>
+      <div class="name">Xiruo Wang 王希若</div>
+      <div class="title">AI Technical Artist / Game & HCI</div>
+      <div class="meta">
+        <div>📍 Hangzhou / Shanghai</div>
+        <div>📧 <span class="obf">xiruo [at] example [dot] com</span></div>
+        <div>🐙 <a href="https://github.com/xiruoplay" target="_blank" rel="noreferrer">github.com/xiruoplay</a></div>
+        <div>🎓 <a href="https://scholar.google.com/" target="_blank" rel="noreferrer">Google Scholar</a></div>
+        <div>💼 <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a></div>
+      </div>
+      <p>
+        我关注 AI 驱动的游戏与交互系统、沉浸式叙事、以及生成式艺术在游戏关卡与情绪调节中的应用。我的作品/论文曾在 SIGGRAPH Asia、CHI、UIST Adjunct、Ars Electronica、A MAZE. 等展会与会议展出/发表。
+      </p>
+    </aside>
+
+    <!-- 右侧：内容区，结构与参考站点一致 -->
+    <div>
+      <section id="news" class="news">
+        <h2># News</h2>
+        <ul>
+          <li><strong>2025.10</strong>: 我在 CHI 2026 担任 Reviewer（创意与人机方向）。</li>
+          <li><strong>2025.09</strong>: 参与 UIST 2025（釜山）。</li>
+          <li><strong>2025.05</strong>: 我们的作品被 CHI 2025 接收（Interactivity/Art）。</li>
+          <li><strong>2025.02</strong>: 提交 CHI LBW/Interactivity，并推进 AI 叙事原型研发。</li>
+        </ul>
+      </section>
+
+      <section id="pubs">
+        <h2># Publications</h2>
+        <div class="list">
+          <div class="item">
+            <div class="pub-grid">
+              <div class="thumb" aria-hidden="true"></div>
+              <div>
+                <div class="title">AI-Driven 3D Comic Interactive Storytelling</div>
+                <div class="sub">CHI 2025 (Interactivity) · 创意系统 / 叙事交互 · 合著</div>
+                <div>
+                  <a href="#">PDF</a> · <a href="#">项目页</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="pub-grid">
+              <div class="thumb" aria-hidden="true"></div>
+              <div>
+                <div class="title">Moonlit Windows: Surreal VR for Emotional Regulation</div>
+                <div class="sub">SIGGRAPH Asia · Art Paper/Exhibition · 第一作者/艺术家</div>
+                <div>
+                  <a href="#">摘要</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="pub-grid">
+              <div class="thumb" aria-hidden="true"></div>
+              <div>
+                <div class="title">1001 Nights: A Capricious AI Collaborator for Narrative Exploration</div>
+                <div class="sub">Workshop/Preprint · 人机共创 / 叙事生成</div>
+                <div>
+                  <a href="#">预印本</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="awards">
+        <h2># Honors and Awards</h2>
+        <div class="list">
+          <div class="item"><div class="title">Ars Electronica / A MAZE. / Now Play This 展映入选</div><div class="sub">2023–2025</div></div>
+          <div class="item"><div class="title">若干艺术/设计竞赛获奖（示例占位，可替换为你的真实获奖列表）</div><div class="sub">2022–2024</div></div>
+        </div>
+      </section>
+
+      <section id="edu">
+        <h2># Educations</h2>
+        <div class="list">
+          <div class="item">
+            <div class="title">UCL · 建筑学硕士（沉浸式交互与叙事）</div>
+            <div class="sub">2021–2023 · Merit</div>
+          </div>
+          <div class="item">
+            <div class="title">上海大学 · 游戏设计 & 3D 艺术（本）｜华东师范大学 · 心理学（辅修）</div>
+            <div class="sub">—</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="exp">
+        <h2># Research Experience</h2>
+        <div class="list">
+          <div class="item">
+            <div class="title">Ada Eden（AI Native Game Studio）· AI Technical Artist</div>
+            <div class="sub">2024–至今 · AI 叙事系统、生成式美术流程、关卡交互</div>
+          </div>
+          <div class="item">
+            <div class="title">NetEase Games · Senior Level Artist</div>
+            <div class="sub">大型 MMORPG 环境与关卡美术</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="talks">
+        <h2># Invited Talks</h2>
+        <div class="list">
+          <div class="item"><div class="title">（占位）如何设计“情绪驱动”的沉浸式叙事系统</div><div class="sub">2025 · 研讨会/课堂分享</div></div>
+        </div>
+      </section>
+
+      <section id="intern">
+        <h2># Internships</h2>
+        <div class="list">
+          <div class="item"><div class="title">（占位）研究/设计实习</div><div class="sub">公司 / 实验室 · 时间</div></div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <h2># Contact</h2>
+        <div class="item">
+          <div class="title">📧 <span class="obf">xiruo [at] example [dot] com</span></div>
+          <div class="sub">🐙 <a href="https://github.com/xiruoplay" target="_blank" rel="noreferrer">github.com/xiruoplay</a> · 🎓 Google Scholar · 💼 LinkedIn</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      © <span id="year"></span> xiruoplay · All rights reserved.
+    </div>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
