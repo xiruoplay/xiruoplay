@@ -9,55 +9,92 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#ffffff;--text:#0f172a;--muted:#5b5b66;--primary:#7c3aed;--card:#faf5ff;--border:#ede9fe;--ok:#16a34a}
-    @media(prefers-color-scheme:dark){:root{--bg:#0b0a16;--text:#e9e7ff;--muted:#b5b3c9;--primary:#a78bfa;--card:#141326;--border:#2a2640;--ok:#22c55e}}
+    :root{--bg:#ffffff;--text:#0f172a;--muted:#5b5b66;--primary:#7c3aed;--primary-2:#a78bfa;--primary-3:#5b21b6;--accent:#c084fc;--card:#faf5ff;--border:#ede9fe;--ok:#16a34a;--ring:color-mix(in srgb, var(--primary) 45%, transparent)}
+    @media(prefers-color-scheme:dark){:root{--bg:#0b0a16;--text:#e9e7ff;--muted:#b5b3c9;--primary:#a78bfa;--primary-2:#c4b5fd;--primary-3:#312e81;--accent:#c084fc;--card:#141326;--border:#2a2640;--ok:#22c55e;--ring:color-mix(in srgb, var(--primary) 55%, transparent)}}
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    html,body{margin:0;padding:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:radial-gradient(1200px 800px at 10% -10%, color-mix(in srgb, var(--primary-2) 8%, var(--bg)) 0%, transparent 52%),
+                 radial-gradient(1000px 700px at 120% 10%, color-mix(in srgb, var(--accent) 6%, var(--bg)) 0%, transparent 48%),
+                 var(--bg);
+      background-image:linear-gradient(to bottom right,rgba(255,255,255,0.01),rgba(0,0,0,0.01));
+      background-blend-mode:overlay;}
     a{color:var(--primary);text-decoration:none}
     img{max-width:100%;display:block}
     .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-    header{position:sticky;top:0;z-index:10;background:color-mix(in srgb, var(--bg) 85%, transparent);backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--border)}
+
+    /* Header & Nav */
+    header{position:sticky;top:0;z-index:10;background:linear-gradient( to right, color-mix(in srgb, var(--bg) 90%, transparent), color-mix(in srgb, var(--primary-2) 10%, var(--bg)) );backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--border)}
     .nav{display:flex;align-items:center;gap:18px;padding:12px 0}
-    .nav .brand{font-weight:700}
+    .nav .brand{font-weight:800;background:linear-gradient(90deg, var(--primary-3), var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent}
     .nav ul{display:flex;gap:14px;list-style:none;margin:0;padding:0}
+    .nav a{position:relative;padding-bottom:2px}
+    .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:linear-gradient(90deg, var(--primary), var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+    .nav a:hover::after{transform:scaleX(1)}
+
+    /* Layout */
     main{display:grid;grid-template-columns:320px 1fr;gap:28px;padding:24px 0}
     @media(max-width:900px){main{grid-template-columns:1fr}}
 
-    /* Left sidebar */
+    /* Sidebar */
     .sidebar{position:sticky;top:64px;align-self:start}
-    .avatar{border-radius:16px;overflow:hidden;border:1px solid var(--border);background:var(--card);width:100%;aspect-ratio:1/1;}
+    .avatar{border-radius:16px;overflow:hidden;border:1px solid var(--border);background:var(--card);width:100%;aspect-ratio:1/1;box-shadow:0 0 0 0 rgba(0,0,0,0);transition:box-shadow .2s ease}
+    .avatar:hover{box-shadow:0 0 0 6px var(--ring)}
     .name{font-size:28px;font-weight:800;margin:14px 0 6px}
     .title{color:var(--muted);margin:0 0 10px}
     .meta{display:grid;gap:8px;margin:12px 0}
-    .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:var(--card);font-size:14px}
 
-    /* Right content */
-    section{padding:18px 0;border-bottom:1px solid var(--border)}
-    section:last-child{border-bottom:none}
-    h2{margin:0 0 10px;font-size:22px}
+    /* Sections with glassy dividers */
+    section{padding:22px 0;border-bottom:1px solid rgba(255,255,255,0.18);position:relative}
+    section::before,section::after{content:"";position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,0.16);backdrop-filter:blur(2px)}
+    section::before{top:0}section::after{bottom:0}
+    h2{margin:0 0 14px;font-size:22px;position:relative}
+    h2::after{content:"";display:block;width:64px;height:4px;border-radius:999px;margin-top:6px;background:linear-gradient(90deg, var(--primary), var(--accent))}
+
+    /* Lists & Cards */
     .list{display:grid;gap:10px}
-    .item{padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--card)}
-    .item .title{font-weight:600}
+    .item,.news li,.awards li,.scholar li{padding:12px;border:1px solid var(--border);border-radius:14px;background:linear-gradient(180deg, var(--card), color-mix(in srgb, var(--primary-2) 5%, var(--card)));box-shadow:0 1px 6px rgba(0,0,0,0.08),inset 0 0 0.5px rgba(255,255,255,0.2);position:relative;transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease}
+    .item .title{font-weight:700;color:#0f172a} /* ensure main titles are black */
     .item .sub{color:var(--muted);font-size:14px;margin-top:4px}
-    .pub-grid{display:grid;grid-template-columns:120px 1fr;gap:12px}
-    .thumb{width:120px;height:80px;border-radius:8px;background:var(--border)}
+
+    /* Hover divider animation */
+    .news li::after,.awards li::after,.scholar li::after,.hoverize .item::after{content:"";position:absolute;left:14px;right:14px;bottom:8px;height:1px;background:var(--border);transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+    .news li:hover,.awards li:hover,.scholar li:hover,.hoverize .item:hover{border-color:color-mix(in srgb, var(--primary) 40%, var(--border));box-shadow:0 4px 14px color-mix(in srgb, var(--primary) 12%, transparent);transform:translateY(-1px)}
+    .news li:hover::after,.awards li:hover::after,.scholar li:hover::after,.hoverize .item:hover::after{transform:scaleX(1)}
+
+    /* Sidebar News */
+    .news ul{margin:0;padding-left:0;list-style:none}
+    .news time{color:var(--muted);font-size:14px;margin-right:8px;white-space:nowrap}
+    .btn-lite{border:1px solid var(--border);background:linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--primary-2) 6%, var(--bg)));padding:6px 10px;border-radius:999px;font-size:13px;cursor:pointer;transition:box-shadow .2s ease, transform .2s ease;margin-top:6px}
+    .btn-lite:hover{box-shadow:0 6px 20px color-mix(in srgb, var(--primary) 20%, transparent);transform:translateY(-1px)}
+    .act{transition:color .2s ease;font-weight:600}
+    .act:hover{color:var(--primary)}
+
+    /* Publications */
+    figure{margin:0}
+    .pub-grid{display:grid;grid-template-columns:minmax(160px,200px) 1fr;gap:16px;align-items:start}
+    .thumb{width:100%;height:0;padding-bottom:66%;border-radius:10px;background:var(--border);overflow:hidden;position:relative}
+    .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+    @media(max-width:700px){.pub-grid{grid-template-columns:1fr}.thumb{padding-bottom:56%}}
+    .logo-row{display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap}
+    .logo{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--border);border-radius:999px;background:linear-gradient(180deg, var(--card), color-mix(in srgb, var(--primary-2) 8%, var(--card)));font-size:12px;font-weight:700;letter-spacing:.3px;box-shadow:0 1px 0 color-mix(in srgb, var(--primary-2) 10%, transparent) inset}
+    .logo .dot{width:8px;height:8px;border-radius:50%}
+    .logo.chi .dot{background:#ef4444}
+    .logo.sig .dot{background:#06b6d4}
+    .me{font-weight:800}
+    .me:hover{color:var(--primary)}
+
+    /* Noise overlay (very subtle) */
+    body::after{content:"";position:fixed;inset:0;pointer-events:none;background:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGZpbHRlciBpZD0ibm9pc2UiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjAuNSIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNub2lzZSkiIGQ9Ik0wIDBoNDAwdjQwMEgweiIgZmlsbD0iIzAwMDAwMCIgb3BhY2l0eT0iMC4wMSIvPjwvc3ZnPg==');mix-blend-mode:overlay;opacity:0.5;}
+
     footer{padding:24px 0 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--border);margin-top:10px}
-    .toc{display:flex;flex-wrap:wrap;gap:10px}
 
-    /* Timeline */
-    .timeline{display:grid;gap:14px}
-    .year-block{border-left:3px solid var(--border);padding-left:12px;margin-left:6px}
-    .year-title{font-weight:700;margin:6px 0}
-    .event{display:grid;gap:2px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--card);margin:8px 0}
-    .event .when{font-size:13px;color:var(--muted)}
-    .event .what{font-weight:600}
-
-    /* Copy buttons */
-    .copy-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .btn{border:1px solid var(--border);background:var(--bg);padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer}
-    .btn:active{transform:translateY(1px)}
-    .toast{position:fixed;inset:auto 16px 16px auto;background:var(--card);border:1px solid var(--border);padding:8px 10px;border-radius:8px;font-size:13px;display:none}
-    .toast.ok{display:block;border-color:color-mix(in srgb, var(--ok) 50%, var(--border))}
+    /* Congrats (lightweight) */
+    .confetti{position:absolute;pointer-events:none;will-change:transform,opacity;width:8px;height:8px;border-radius:2px;opacity:.9}
+    .confetti.circle{border-radius:50%}
+    .confetti.c1{background:linear-gradient(135deg,var(--primary-2),var(--accent))}
+    .confetti.c2{background:linear-gradient(135deg,#d8b4fe,#a78bfa)}
+    .confetti.c3{background:linear-gradient(135deg,#c084fc,#7c3aed)}
+    @keyframes congratsUp{0%{transform:translate(var(--x,0),var(--y,0)) rotate(0);opacity:.9}100%{transform:translate(calc(var(--x,0) + var(--dx,0)),calc(var(--y,0) - var(--rise,90px))) rotate(var(--rot,360deg));opacity:0}}
   </style>
 </head>
 <body>
@@ -66,15 +103,14 @@
       <div class="brand">xiruoplay</div>
       <nav>
         <ul class="toc">
-          <li><a href="#about">About</a></li>
-          <li><a href="#news">News</a></li>
+          <li><a href="#aboutme">About</a></li>
           <li><a href="#pubs">Publications</a></li>
-          <li><a href="#awards">Honors & Awards</a></li>
           <li><a href="#edu">Education</a></li>
-          <li><a href="#exp">Research</a></li>
-          <li><a href="#talks">Invited Talks</a></li>
           <li><a href="#work">Work</a></li>
-          <li><a href="#intern">Internships</a></li>
+          <li><a href="#exp">Research</a></li>
+          <li><a href="#scholarships">Scholarships</a></li>
+          <li><a href="#awards">Honors & Awards</a></li>
+          <li><a href="#exhibit">Exhibitions & Talks</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
@@ -82,7 +118,7 @@
   </header>
 
   <main class="wrap">
-    <!-- Sidebar -->
+    <!-- Sidebar with News under LinkedIn -->
     <aside class="sidebar" id="about">
       <img class="avatar" src="https://github.com/xiruoplay.png" alt="avatar of Xiruo Wang"/>
       <div class="name">Xiruo Wang 王曦若</div>
@@ -92,123 +128,71 @@
         <div>📧 <a href="mailto:xiruo.wang.22@alumni.ucl.ac.uk">xiruo.wang.22@alumni.ucl.ac.uk</a></div>
         <div>💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
       </div>
-      <p>
-        I focus on AI-driven games and interactive systems, immersive narratives, and generative art for level design and emotional regulation. My works and papers have appeared at SIGGRAPH Asia, CHI, Ars Electronica, A&nbsp;MAZE./Berlin, and the London Game Festival.
-      </p>
+
+      <section id="news" class="news">
+        <h2>News</h2>
+        <ul id="news-list">
+          <li><time>Nov 2025</time> Tencent Game Award 2025 Nomination &amp; Invited Talk <span class="act">Tencent Game Award 2025</span></li>
+          <li><time>Aug 2025</time> 1001 Nights exhibited at <span class="act">ChinaJoy 2025</span>, Shanghai</li>
+          <li><time>Apr 2025</time> Presented at <span class="act">ACM CHI 2025</span> (Interactivity), Yokohama, Japan</li>
+          <li><time>Feb 2025</time> Paper accepted at <span class="act">ACM CHI EA 2025</span> — “I Like Your Story!”</li>
+          <li><time>Dec 2024</time> Art Paper presented at <span class="act">SIGGRAPH Asia 2024</span>, Tokyo, Japan</li>
+          <li><time>Jan 2024</time> Graduated with a Merit Master's degree in Architecture from University College London 🎓</li>
+          <li><time>Oct 2024</time> AI-native game "1001 Nights" demo launched on <span class="act">Steam</span></li>
+          <li><time>Sep 2024</time> Invited talk at <span class="act">Ars Electronica 2024</span> — Expanded Animation Conference, Linz, Austria</li>
+          <li><time>2023–2024</time> Works selected for <span class="act">A MAZE./Berlin, Now Play This, EGX, Gamescom</span></li>
+        </ul>
+        <button id="news-toggle" class="btn-lite" aria-expanded="false">Show more ▾</button>
+      </section>
     </aside>
 
-    <!-- Content -->
+    <!-- Main content in requested order -->
     <div>
-      <!-- News: auto timeline -->
-      <section id="news">
-        <h2>News</h2>
-        <div id="timeline" class="timeline" aria-live="polite"></div>
+      <section id="aboutme">
+        <h2>About Me</h2>
+        <p>I focus on AI-driven games and interactive systems, immersive narratives, and generative art for level design and emotional regulation. My works and papers have appeared at SIGGRAPH Asia, CHI, Ars Electronica, A&nbsp;MAZE./Berlin, and the London Game Festival.</p>
+        <p><strong>Keywords</strong>: AI games · HCI · VR narrative · co-creation · generative art · level design · affective computing. Portfolio: <a href="https://www.xiruowang.com" target="_blank" rel="noreferrer">www.xiruowang.com</a></p>
       </section>
 
-      <!-- Publications with copy buttons -->
+      <!-- Publications (two items, with images, no DOI/buttons) -->
       <section id="pubs">
         <h2>Publications</h2>
         <div class="list">
           <!-- CHI EA '25 -->
-          <div class="item">
+          <div class="item pub-card">
             <div class="pub-grid">
-              <div class="thumb" aria-hidden="true"></div>
+              <figure class="thumb">
+                <img src="sandbox:/mnt/data/wechat_2025-11-05_024113_344.png" alt="Screenshot from I Like Your Story">
+              </figure>
               <div>
                 <div class="title">“I Like Your Story!”: A Co-Creative Story-Crafting Game with a Persona-Driven Character Based on Generative AI</div>
-                <div class="sub">Jiaying Fu, Xiruo Wang, Kate Vi, Zhouyi Li, Chuyan Xu, Yuqian Sun · CHI EA ’25</div>
-                <div>
-                  <a target="_blank" rel="noreferrer" href="https://doi.org/10.1145/3706599.3721163">DOI</a>
+                <div class="sub">Jiaying Fu, <strong class="me">Xiruo Wang</strong>, Kate Vi, Zhouyi Li, Chuyan Xu, Yuqian Sun · CHI EA ’25 · Yokohama, Japan</div>
+                <div class="logo-row">
+                  <span class="logo chi"><span class="dot" aria-hidden="true"></span>CHI 2025</span>
                 </div>
-                <div class="copy-row">
-                  <button class="btn" data-copy="bibtex" data-for="chi25">Copy BibTeX</button>
-                  <button class="btn" data-copy="apa" data-for="chi25">Copy APA</button>
-                </div>
-                <template id="chi25-bibtex">
-@inproceedings{Fu2025ILikeYourStory,
-  author = {Fu, Jiaying and Wang, Xiruo and Vi, Kate and Li, Zhouyi and Xu, Chuyan and Sun, Yuqian},
-  title = {“I Like Your Story!”: A Co-Creative Story-Crafting Game with a Persona-Driven Character Based on Generative AI},
-  booktitle = {Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems},
-  year = {2025},
-  doi = {10.1145/3706599.3721163}
-}
-                </template>
-                <template id="chi25-apa">
-Fu, J., Wang, X., Vi, K., Li, Z., Xu, C., & Sun, Y. (2025). “I Like Your Story!”: A co-creative story-crafting game with a persona-driven character based on generative AI. In *CHI EA ’25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems*. https://doi.org/10.1145/3706599.3721163
-                </template>
               </div>
             </div>
           </div>
 
           <!-- SIGGRAPH Asia '24 Art Papers -->
-          <div class="item">
+          <div class="item pub-card">
             <div class="pub-grid">
-              <div class="thumb" aria-hidden="true"></div>
+              <figure class="thumb">
+                <img src="sandbox:/mnt/data/Figure5.png" alt="Exhibition view from SIGGRAPH Asia art paper">
+              </figure>
               <div>
                 <div class="title">Constructing Immersive Narrative Environments with Physical Interaction: 17th-Century European Fascination with China</div>
-                <div class="sub">Xiruo Wang · SIGGRAPH Asia ’24 Art Papers</div>
-                <div><a target="_blank" rel="noreferrer" href="https://doi.org/10.1145/3680530.3695457">DOI</a></div>
-                <div class="copy-row">
-                  <button class="btn" data-copy="bibtex" data-for="sa24">Copy BibTeX</button>
-                  <button class="btn" data-copy="apa" data-for="sa24">Copy APA</button>
+                <div class="sub"><strong class="me">Xiruo Wang</strong> · SIGGRAPH Asia ’24 Art Papers · Tokyo, Japan</div>
+                <div class="logo-row">
+                  <span class="logo sig"><span class="dot" aria-hidden="true"></span>SIGGRAPH Asia 2024</span>
                 </div>
-                <template id="sa24-bibtex">
-@inproceedings{Wang2024ConstructingImmersive,
-  author = {Wang, Xiruo},
-  title = {Constructing Immersive Narrative Environments with Physical Interaction: 17th-Century European Fascination with China},
-  booktitle = {SIGGRAPH Asia 2024 Art Papers},
-  year = {2024},
-  doi = {10.1145/3680530.3695457}
-}
-                </template>
-                <template id="sa24-apa">
-Wang, X. (2024). Constructing immersive narrative environments with physical interaction: 17th-century European fascination with China. In *SIGGRAPH Asia 2024 Art Papers*. https://doi.org/10.1145/3680530.3695457
-                </template>
-              </div>
-            </div>
-          </div>
-
-          <!-- Preprint -->
-          <div class="item">
-            <div class="pub-grid">
-              <div class="thumb" aria-hidden="true"></div>
-              <div>
-                <div class="title">1001 Nights: A Capricious AI Collaborator for Narrative Exploration</div>
-                <div class="sub">Workshop / Preprint · Human–AI Co-Creation</div>
-                <div><span class="sub">Preprint coming soon</span></div>
-                <div class="copy-row">
-                  <button class="btn" data-copy="bibtex" data-for="nights">Copy BibTeX</button>
-                  <button class="btn" data-copy="apa" data-for="nights">Copy APA</button>
-                </div>
-                <template id="nights-bibtex">
-@misc{Wang2025NightsPreprint,
-  author = {Wang, Xiruo},
-  title = {1001 Nights: A Capricious AI Collaborator for Narrative Exploration},
-  year = {2025},
-  note = {Preprint}
-}
-                </template>
-                <template id="nights-apa">
-Wang, X. (2025). *1001 Nights: A capricious AI collaborator for narrative exploration* (Preprint).
-                </template>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="awards">
-        <h2>Honors and Awards</h2>
-        <div class="list">
-          <div class="item"><div class="title">Best Innovation — The Digiloong Global AI Game & Application Innovation Competition</div><div class="sub">2023</div></div>
-          <div class="item"><div class="title">A&nbsp;MAZE./Berlin — Explorer Award Nominee</div><div class="sub">2024</div></div>
-          <div class="item"><div class="title">China Indie Game Awards — Best Innovation</div><div class="sub">2023</div></div>
-          <div class="item"><div class="title">Ars Electronica 2024 · Expanded Animation Conference (invited talk)</div><div class="sub">2024</div></div>
-          <div class="item"><div class="title">Now Play This (London Game Festival) — Selection</div><div class="sub">2024</div></div>
-          <div class="item"><div class="title">EGX (London) / Gamescom (Cologne) — Selection</div><div class="sub">2023</div></div>
-        </div>
-      </section>
-
-      <section id="edu">
+      <section id="edu" class="hoverize">
         <h2>Education</h2>
         <div class="list">
           <div class="item">
@@ -226,45 +210,7 @@ Wang, X. (2025). *1001 Nights: A capricious AI collaborator for narrative explor
         </div>
       </section>
 
-      <section id="exp">
-        <h2>Research</h2>
-        <div class="list">
-          <div class="item">
-            <div class="title">Language as Reality: Co-Creative Storytelling in <em>1001 Nights</em> with Generative AI</div>
-            <div class="sub">Team Research · Jun 2023 – Jan 2025</div>
-            <ul class="sub">
-              <li>Built an LLM-driven narrative system enabling AI characters to reshape states and environments.</li>
-              <li>Designed dynamic object triggers and branching logic; ran 3 iterative workshops (N=18).</li>
-              <li>Outcome: paper accepted at CHI EA ’25; insights for adaptive narrative systems.</li>
-            </ul>
-          </div>
-          <div class="item">
-            <div class="title">Surrealist Explorations in VR: Cultural Narrative Environments</div>
-            <div class="sub">Postgraduate Research · Jun 2023 – Jan 2024</div>
-            <ul class="sub">
-              <li>Prototyped immersive VR narratives combining surrealism and orientalist aesthetics.</li>
-              <li>Conducted user studies on multisensory engagement and cultural expression.</li>
-              <li>Outcome: SIGGRAPH Asia ’24 Art Paper; presented to 150+ attendees in Tokyo.</li>
-            </ul>
-          </div>
-          <div class="item">
-            <div class="title">Serious Games for Digital Cultural Creativity in Museums</div>
-            <div class="sub">PI · National Undergraduate Innovation Program (China) · Jun 2019 – Apr 2020</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="talks">
-        <h2>Invited Talks</h2>
-        <div class="list">
-          <div class="item">
-            <div class="title">Ars Electronica 2024 — Expanded Animation Conference (invited talk)</div>
-            <div class="sub">2024 · Linz, Austria</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="work">
+      <section id="work" class="hoverize">
         <h2>Work</h2>
         <div class="list">
           <div class="item">
@@ -288,110 +234,155 @@ Wang, X. (2025). *1001 Nights: A capricious AI collaborator for narrative explor
         </div>
       </section>
 
-      <section id="intern">
-        <h2>Internships</h2>
+      <section id="exp" class="hoverize">
+        <h2>Research</h2>
         <div class="list">
-          <div class="item"><div class="title">—</div><div class="sub">Reach out for the full CV</div></div>
+          <div class="item">
+            <div class="title">Language as Reality: Co-Creative Storytelling in <em>1001 Nights</em> with Generative AI</div>
+            <div class="sub">Team Research · Jun 2023 – Jan 2025</div>
+            <ul class="sub">
+              <li>Built an LLM-driven narrative system enabling AI characters to reshape states and environments.</li>
+              <li>Designed dynamic object triggers and branching logic; ran 3 iterative workshops (N=18).</li>
+              <li>Outcome: paper accepted at CHI EA ’25; insights for adaptive narrative systems.</li>
+            </ul>
+          </div>
+          <div class="item">
+            <div class="title">Surrealist Explorations in VR: Cultural Narrative Environments</div>
+            <div class="sub">Postgraduate Research · Jun 2023 – Jan 2024</div>
+            <ul class="sub">
+              <li>Prototyped immersive VR narratives combining surrealism and orientalist aesthetics.</li>
+              <li>Conducted user studies on multisensory engagement and cultural expression.</li>
+              <li>Outcome: SIGGRAPH Asia ’24 Art Paper; presented in Tokyo.</li>
+            </ul>
+          </div>
+          <div class="item">
+            <div class="title">Serious Games for Digital Cultural Creativity in Museums</div>
+            <div class="sub">PI · National Undergraduate Innovation Program (China) · Jun 2019 – Apr 2020</div>
+          </div>
         </div>
+      </section>
+
+      <section id="scholarships" class="scholar">
+        <h2>Scholarships</h2>
+        <ul>
+          <li>Shanghai Municipal Scholarship (equivalent to National Scholarship amount, CNY 8,000)</li>
+          <li>Shanghai University Academic First-Class Scholarship — CNY 4,000</li>
+          <li>Shanghai University Innovation &amp; Entrepreneurship Scholarship — CNY 500</li>
+          <li>Shanghai University Leadership Scholarship — CNY 500</li>
+        </ul>
+      </section>
+
+      <section id="awards" class="awards">
+        <h2>Honors and Awards</h2>
+        <ul>
+          <li><span class="act">Best Innovation</span> — The Digiloong Global AI Game &amp; Application Innovation Competition</li>
+          <li><span class="act">Innovation Award Nomination</span> — The Gamescom Latam BIG Festival, São Paulo, Brazil</li>
+          <li><span class="act">A&nbsp;MAZE./Berlin — Explorer Award Nominee</span>, Berlin, Germany</li>
+          <li><span class="act">China Indie Game Awards — Best Innovation</span></li>
+          <li><span class="act">Shanghai Municipal Outstanding Graduate</span></li>
+        </ul>
+      </section>
+
+      <!-- Exhibitions & Talks (News-like, with Show more) -->
+      <section id="exhibit" class="news">
+        <h2>Exhibitions and Talks</h2>
+        <ul id="exhibit-list">
+          <li><time>Aug 2025</time> <span class="act">ChinaJoy 2025</span> · Shanghai, China · Shanghai New International Expo Centre</li>
+          <li><time>May 2025</time> <span class="act">Gamescom Latam BIG Festival</span> · São Paulo, Brazil · São Paulo Expo</li>
+          <li><time>Mar 2025</time> <span class="act">GDC</span> · San Francisco, United States · Moscone Center</li>
+          <li><time>Jan 2025</time> <span class="act">The 6th “Amid Mountains and Seas” Digital Art Gallery</span> · San Francisco, United States · SFCU Art Space</li>
+          <li><time>Nov 2024</time> <span class="act">NEXT Level Festival</span> · Dortmund, Germany · Dortmunder U</li>
+          <li><time>Sep 2024</time> <span class="act">Ars Electronica 2024</span> · Linz, Austria · Ars Electronica Center</li>
+          <li><time>May 2024</time> <span class="act">Gamescom 2024</span> · Cologne, Germany · Messe Köln</li>
+          <li><time>Apr 2024</time> <span class="act">NOW PLAY THIS</span> (London Games Festival 2024) · London, United Kingdom · Somerset House</li>
+          <li><time>Nov 2023</time> <span class="act">WEPLAY 2023</span> · Shanghai, China · Shanghai Exhibition Center</li>
+          <li><time>Sep 2023</time> <span class="act">EGX 2023</span> (Eurogamer Expo) · London, United Kingdom · ExCeL London</li>
+          <li><time>Sep 2023</time> <span class="act">Ars Electronica 2023</span> · Linz, Austria · Ars Electronica Center</li>
+        </ul>
+        <button id="exhibit-toggle" class="btn-lite" aria-expanded="false">Show more ▾</button>
       </section>
 
       <section id="contact">
         <h2>Contact</h2>
         <div class="item">
           <div class="title">📧 <a href="mailto:xiruo.wang.22@alumni.ucl.ac.uk">xiruo.wang.22@alumni.ucl.ac.uk</a></div>
-          <div class="sub">🐙 <a href="https://github.com/xiruoplay" target="_blank" rel="noreferrer">github.com/xiruoplay</a> · 🎓 <a href="#" aria-disabled="true" title="Google Scholar updating soon">Google Scholar (updating)</a> · 💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
+          <div class="sub">🐙 <a href="https://github.com/xiruoplay" target="_blank" rel="noreferrer">github.com/xiruoplay</a> · 💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
         </div>
       </section>
     </div>
   </main>
 
   <footer>
-    <div class="wrap">
-      © <span id="year"></span> xiruoplay · All rights reserved.
-    </div>
+    <div class="wrap">© <span id="year"></span> xiruoplay · All rights reserved.</div>
   </footer>
 
-  <div id="toast" class="toast" role="status" aria-live="polite">Copied!</div>
-
   <script>
-    // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // ===== News timeline data (edit items here) =====
-    // month is 1-12; day optional
-    const NEWS = [
-      { y:2025, m:9,  d:1,  what:"Joined Ada Eden (AI native game studio) as AI Technical Artist / Researcher", where:"Shanghai / Remote" },
-      { y:2025, m:9,  d:1,  what:"Transitioned from Senior Artist role at NetEase Games", where:"Hangzhou" },
-      { y:2025, m:4,  d:1,  what:"Presented at ACM CHI 2025 (Interactivity)", where:"Yokohama, Japan" },
-      { y:2025, m:2,  d:10, what:"Paper accepted to ACM CHI EA ’25 — “I Like Your Story!”", link:"https://doi.org/10.1145/3706599.3721163" },
-      { y:2024, m:12, d:1,  what:"Art Paper presented at ACM SIGGRAPH Asia 2024", where:"Tokyo, Japan" },
-      { y:2024, m:9,  d:1,  what:"Invited talk at Ars Electronica 2024 — Expanded Animation Conference", where:"Linz, Austria" },
-      { y:2023, m:6,  d:1,  what:"Works selected for A MAZE./Berlin, Now Play This, EGX, Gamescom", where:"EU/UK" }
-    ];
+    // Sidebar News: collapse to latest 5 with Show more toggle (▾/▴)
+    (function(){
+      const list = document.getElementById('news-list');
+      if(!list) return;
+      const items = Array.from(list.children);
+      const btn = document.getElementById('news-toggle') || (function(){const b=document.createElement('button');b.id='news-toggle';b.className='btn-lite';b.textContent='Show more ▾';b.setAttribute('aria-expanded','false');list.parentElement.appendChild(b);return b;})();
+      const limit = 5;
+      function apply(collapsed){
+        items.forEach((li, i)=> li.style.display = (collapsed && i >= limit) ? 'none' : '');
+        if(btn){ btn.textContent = collapsed ? 'Show more ▾' : 'Show less ▴'; btn.setAttribute('aria-expanded', String(!collapsed)); }
+      }
+      let collapsed = true; apply(collapsed);
+      if(btn){ btn.addEventListener('click', ()=>{ collapsed = !collapsed; apply(collapsed); }); }
+    })();
 
-    // ===== Build timeline grouped by year =====
-    function buildTimeline(items){
-      const container = document.getElementById('timeline');
-      if(!container) return;
-      // sort desc by date
-      items.sort((a,b)=> new Date(b.y,b.m-1,b.d||1) - new Date(a.y,a.m-1,a.d||1));
-      // group by year
-      const groups = {};
-      items.forEach(it => {
-        groups[it.y] = groups[it.y] || [];
-        groups[it.y].push(it);
-      });
+    // Exhibitions & Talks: collapse to latest 5 with Show more toggle (▾/▴)
+    (function(){
+      const list=document.getElementById('exhibit-list');
+      const btn=document.getElementById('exhibit-toggle');
+      if(!list||!btn) return;
+      const items=[...list.children];
+      const limit=5;let collapsed=true;
+      function apply(c){items.forEach((li,i)=>li.style.display=(c&&i>=limit)?'none':'');btn.textContent=c?'Show more ▾':'Show less ▴';btn.setAttribute('aria-expanded',!c);}
+      apply(collapsed);
+      btn.addEventListener('click',()=>{collapsed=!collapsed;apply(collapsed);});
+    })();
 
-      Object.keys(groups).sort((a,b)=> b-a).forEach(year=>{
-        const block = document.createElement('div');
-        block.className = 'year-block';
-        block.innerHTML = `<div class="year-title">${year}</div>`;
-        groups[year].forEach(ev=>{
-          const row = document.createElement('div');
-          row.className = 'event';
-          const mm = String(ev.m).padStart(2,'0');
-          const dd = ev.d ? String(ev.d).padStart(2,'0') : '';
-          const when = ev.d ? `${year}-${mm}-${dd}` : `${year}-${mm}`;
-          const title = ev.link ? `<a href="${ev.link}" target="_blank" rel="noreferrer">${ev.what}</a>` : ev.what;
-          row.innerHTML = `
-            <div class="when">${when}${ev.where ? " · " + ev.where : ""}</div>
-            <div class="what">${title}</div>
-          `;
-          block.appendChild(row);
+    // Congrats (lightweight) on hover for Honors & Awards and Scholarships
+    (function(){
+      const targets = document.querySelectorAll('.awards li, .scholar li');
+      if(!targets.length) return;
+      const rand = (min,max)=> Math.random()*(max-min)+min;
+      const burst = (el, x, y, count=12)=>{
+        const rect = el.getBoundingClientRect();
+        const baseX = (x ?? rect.width/2);
+        const baseY = (y ?? rect.height/2);
+        for(let i=0;i<count;i++){
+          const span = document.createElement('span');
+          span.className = 'confetti '+(Math.random()<.5?'circle':'')+' '+(['c1','c2','c3'][Math.floor(Math.random()*3)]);
+          span.style.left = baseX+'px';
+          span.style.top  = baseY+'px';
+          span.style.setProperty('--x','0px');
+          span.style.setProperty('--y','0px');
+          span.style.setProperty('--dx', (rand(-60,60))+'px');
+          span.style.setProperty('--rise', (rand(70,130))+'px');
+          span.style.setProperty('--rot', (rand(180,540))+'deg');
+          const dur = 650 + Math.random()*500;
+          span.style.animation = `congratsUp ${dur}ms ease-out forwards`;
+          el.appendChild(span);
+          setTimeout(()=> span.remove(), dur+80);
+        }
+      };
+      targets.forEach(li=>{
+        li.style.position = li.style.position || 'relative';
+        let last = 0;
+        li.addEventListener('mouseenter', (e)=>{
+          const now = performance.now();
+          if(now - last < 1200) return; // throttle
+          last = now;
+          const rect = li.getBoundingClientRect();
+          burst(li, e.clientX - rect.left, e.clientY - rect.top, 12);
         });
-        container.appendChild(block);
       });
-    }
-    buildTimeline(NEWS);
-
-    // ===== Copy buttons for BibTeX / APA =====
-    const toast = document.getElementById('toast');
-    function showToast(msg='Copied!'){
-      toast.textContent = msg;
-      toast.classList.add('ok');
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(()=> toast.classList.remove('ok'), 1400);
-    }
-    function getTemplateText(key, type){
-      const id = `${key}-${type}`;
-      const t = document.getElementById(id);
-      return t ? t.content.textContent.trim() : '';
-    }
-    document.addEventListener('click', (e)=>{
-      const btn = e.target.closest('[data-copy]');
-      if(!btn) return;
-      const type = btn.getAttribute('data-copy'); // 'bibtex' or 'apa'
-      const key  = btn.getAttribute('data-for');  // e.g., 'chi25'
-      const text = getTemplateText(key, type);
-      if(!text) return;
-      navigator.clipboard.writeText(text).then(()=> showToast('Copied to clipboard')).catch(()=>{
-        // fallback
-        const ta = document.createElement('textarea');
-        ta.value = text; document.body.appendChild(ta);
-        ta.select(); document.execCommand('copy'); ta.remove();
-        showToast('Copied');
-      });
-    });
+    })();
   </script>
 </body>
 </html>
