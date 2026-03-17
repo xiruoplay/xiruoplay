@@ -7,89 +7,100 @@
   <meta name="description" content="Xiruo Wang | AI-driven games, HCI, immersive narratives — portfolio and publications." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{--bg:#ffffff;--text:#0f172a;--muted:#5b5b66;--primary:#7c3aed;--primary-2:#a78bfa;--primary-3:#5b21b6;--accent:#c084fc;--card:#faf5ff;--border:#ede9fe;--ok:#16a34a;--ring:color-mix(in srgb, var(--primary) 45%, transparent)}
     @media(prefers-color-scheme:dark){:root{--bg:#0b0a16;--text:#e9e7ff;--muted:#b5b3c9;--primary:#a78bfa;--primary-2:#c4b5fd;--primary-3:#312e81;--accent:#c084fc;--card:#141326;--border:#2a2640;--ok:#22c55e;--ring:color-mix(in srgb, var(--primary) 55%, transparent)}}
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    html {scroll-behavior:smooth;}
+    
+    /* UX 优化：增加全局行高，降低文字密度 */
+    html,body{margin:0;padding:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; line-height:1.65;
       background:radial-gradient(1200px 800px at 10% -10%, color-mix(in srgb, var(--primary-2) 8%, var(--bg)) 0%, transparent 52%),
                  radial-gradient(1000px 700px at 120% 10%, color-mix(in srgb, var(--accent) 6%, var(--bg)) 0%, transparent 48%),
                  var(--bg);
       background-image:linear-gradient(to bottom right,rgba(255,255,255,0.01),rgba(0,0,0,0.01));
       background-blend-mode:overlay;}
+      
     a{color:var(--primary);text-decoration:none}
     img{max-width:100%;display:block}
-    .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 24px} /* 稍微增加屏幕两侧安全距离 */
 
     /* Header & Nav */
     header{position:sticky;top:0;z-index:10;background:linear-gradient( to right, color-mix(in srgb, var(--bg) 90%, transparent), color-mix(in srgb, var(--primary-2) 10%, var(--bg)) );backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--border)}
-    .nav{display:flex;align-items:center;gap:18px;padding:12px 0}
-    .nav .brand{font-weight:800;background:linear-gradient(90deg, var(--primary-3), var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent}
-    .nav ul{display:flex;gap:14px;list-style:none;margin:0;padding:0}
-    .nav a{position:relative;padding-bottom:2px}
+    .nav{display:flex;align-items:center;gap:24px;padding:16px 0} /* 增加导航栏内高 */
+    .nav .brand{font-weight:800;background:linear-gradient(90deg, var(--primary-3), var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent; font-size: 18px;}
+    .nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0; flex-wrap: wrap;}
+    .nav a{position:relative;padding-bottom:4px; font-weight: 500;}
     .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:linear-gradient(90deg, var(--primary), var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
     .nav a:hover::after{transform:scaleX(1)}
 
-    /* Layout */
-    main{display:grid;grid-template-columns:320px 1fr;gap:28px;padding:24px 0}
+    /* Layout - UX 优化：大幅增加侧边栏与主内容的间距 (gap: 48px) */
+    main{display:grid;grid-template-columns:320px 1fr;gap:48px;padding:40px 0}
     @media(max-width:900px){main{grid-template-columns:1fr}}
 
     /* Sidebar */
-    .sidebar{position:sticky;top:64px;align-self:start}
+    .sidebar{position:sticky;top:80px;align-self:start}
     .avatar{border-radius:50%;overflow:hidden;border:1px solid var(--border);background:var(--card);width:100%;aspect-ratio:1/1;box-shadow:0 0 0 0 rgba(0,0,0,0);transition:box-shadow .2s ease}
     .avatar:hover{box-shadow:0 0 0 6px var(--ring)}
-    .name{font-size:28px;font-weight:800;margin:14px 0 6px}
-    .title{color:var(--muted);margin:0 0 10px}
-    .meta{display:grid;gap:8px;margin:12px 0}
+    .name{font-size:28px;font-weight:800;margin:16px 0 6px}
+    .title{color:var(--muted);margin:0 0 16px; font-size: 15px;}
+    .meta{display:grid;gap:12px;margin:16px 0; font-size: 14px;} /* 增加信息间距 */
 
-    /* Sections with glassy dividers */
-    section{padding:22px 0;border-bottom:1px solid rgba(255,255,255,0.18);position:relative}
+    /* Sections - UX 优化：拉开区块间距，提供视觉停顿 */
+    section{padding:40px 0;border-bottom:1px solid rgba(255,255,255,0.18);position:relative}
     section::before,section::after{content:"";position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,0.16);backdrop-filter:blur(2px)}
     section::before{top:0}section::after{bottom:0}
-    h2{margin:0 0 14px;font-size:22px;position:relative}
-    h2::after{content:"";display:block;width:64px;height:4px;border-radius:999px;margin-top:6px;background:linear-gradient(90deg, var(--primary), var(--accent))}
+    h2{margin:0 0 24px;font-size:24px;position:relative; font-weight: 700;} /* 加大标题及其下边距 */
+    h2::after{content:"";display:block;width:64px;height:4px;border-radius:999px;margin-top:8px;background:linear-gradient(90deg, var(--primary), var(--accent))}
+    
+    p { margin: 0 0 16px 0; }
+    p:last-child { margin-bottom: 0; }
 
-    /* Lists & Cards */
-    .list{display:grid;gap:10px}
-    .item,.news li,.awards li,.scholar li{padding:12px;border:1px solid var(--border);border-radius:14px;background:linear-gradient(180deg, var(--card), color-mix(in srgb, var(--primary-2) 5%, var(--card)));box-shadow:0 1px 6px rgba(0,0,0,0.08),inset 0 0 0.5px rgba(255,255,255,0.2);position:relative;transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease}
-    .item .title{font-weight:700;color:#0f172a} /* ensure main titles are black */
-    .item .sub{color:var(--muted);font-size:14px;margin-top:4px}
+    /* Lists & Cards - UX 优化：卡片内外部留白双倍增加，减缓压迫感 */
+    .list{display:grid;gap:16px} /* 列表项距离拉开 */
+    .item,.news li,.awards li,.scholar li{padding:20px;border:1px solid var(--border);border-radius:14px;background:linear-gradient(180deg, var(--card), color-mix(in srgb, var(--primary-2) 5%, var(--card)));box-shadow:0 1px 6px rgba(0,0,0,0.08),inset 0 0 0.5px rgba(255,255,255,0.2);position:relative;transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease}
+    .item .title{font-weight:700;color:var(--text); font-size: 16px;}
+    .item .sub{color:var(--muted);font-size:14px;margin-top:6px}
+    ul.sub { margin: 10px 0 0; padding-left: 20px; font-size: 14px; color: var(--muted); }
+    ul.sub li { margin-bottom: 6px; }
 
-    /* Hover divider animation */
-    .news li::after,.awards li::after,.scholar li::after,.hoverize .item::after{content:"";position:absolute;left:14px;right:14px;bottom:8px;height:1px;background:var(--border);transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
-    .news li:hover,.awards li:hover,.scholar li:hover,.hoverize .item:hover{border-color:color-mix(in srgb, var(--primary) 40%, var(--border));box-shadow:0 4px 14px color-mix(in srgb, var(--primary) 12%, transparent);transform:translateY(-1px)}
+    /* Hover divider animation - 配合新的 padding 同步调整线条位置 */
+    .news li::after,.awards li::after,.scholar li::after,.hoverize .item::after{content:"";position:absolute;left:20px;right:20px;bottom:12px;height:1px;background:var(--border);transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+    .news li:hover,.awards li:hover,.scholar li:hover,.hoverize .item:hover{border-color:color-mix(in srgb, var(--primary) 40%, var(--border));box-shadow:0 4px 14px color-mix(in srgb, var(--primary) 12%, transparent);transform:translateY(-2px)}
     .news li:hover::after,.awards li:hover::after,.scholar li:hover::after,.hoverize .item:hover::after{transform:scaleX(1)}
 
-    /* Sidebar News */
-    .news ul{margin:0;padding-left:0;list-style:none}
-    .news time{color:var(--muted);font-size:14px;margin-right:8px;white-space:nowrap}
-    .btn-lite{border:1px solid var(--border);background:linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--primary-2) 6%, var(--bg)));padding:6px 10px;border-radius:999px;font-size:13px;cursor:pointer;transition:box-shadow .2s ease, transform .2s ease;margin-top:6px}
+    /* Lists Resets */
+    .news ul, .awards ul, .scholar ul {margin:0;padding:0;list-style:none; display:grid; gap:12px;} /* 卡片统一使用 grid 布局拉开距离 */
+    .news li { font-size: 14px; }
+    .news time{color:var(--muted);font-size:13px; font-weight: 500; display:block; margin-bottom:4px;} /* 时间独立一行，更清晰 */
+    
+    .btn-lite{border:1px solid var(--border);background:linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--primary-2) 6%, var(--bg)));padding:8px 16px;border-radius:999px;font-size:13px;font-weight: 500;cursor:pointer;transition:box-shadow .2s ease, transform .2s ease;margin-top:12px; width: 100%;}
     .btn-lite:hover{box-shadow:0 6px 20px color-mix(in srgb, var(--primary) 20%, transparent);transform:translateY(-1px)}
-    .act{transition:color .2s ease;font-weight:600}
+    .act{transition:color .2s ease;font-weight:600; color: var(--text);}
     .act:hover{color:var(--primary)}
 
     /* Publications */
     figure{margin:0}
-    .pub-grid{display:grid;grid-template-columns:minmax(160px,200px) 1fr;gap:16px;align-items:start}
+    .pub-grid{display:grid;grid-template-columns:minmax(180px,220px) 1fr;gap:24px;align-items:start} /* 增加缩略图与文字的间距 */
     .thumb{width:100%;height:0;padding-bottom:66%;border-radius:10px;background:var(--border);overflow:hidden;position:relative}
     .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
     @media(max-width:700px){.pub-grid{grid-template-columns:1fr}.thumb{padding-bottom:56%}}
-    .logo-row{display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap}
-    .logo{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--border);border-radius:999px;background:linear-gradient(180deg, var(--card), color-mix(in srgb, var(--primary-2) 8%, var(--card)));font-size:12px;font-weight:700;letter-spacing:.3px;box-shadow:0 1px 0 color-mix(in srgb, var(--primary-2) 10%, transparent) inset}
+    .logo-row{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+    .logo{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--border);border-radius:999px;background:linear-gradient(180deg, var(--card), color-mix(in srgb, var(--primary-2) 8%, var(--card)));font-size:12px;font-weight:700;letter-spacing:.3px;box-shadow:0 1px 0 color-mix(in srgb, var(--primary-2) 10%, transparent) inset}
     .logo .dot{width:8px;height:8px;border-radius:50%}
     .logo.chi .dot{background:#ef4444}
     .logo.sig .dot{background:#06b6d4}
-    .me{font-weight:800}
+    .me{font-weight:800; text-decoration: underline; text-decoration-color: var(--primary-2); text-underline-offset: 3px;}
     .me:hover{color:var(--primary)}
 
-    /* Noise overlay (very subtle) */
+    /* Noise overlay */
     body::after{content:"";position:fixed;inset:0;pointer-events:none;background:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGZpbHRlciBpZD0ibm9pc2UiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjAuNSIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNub2lzZSkiIGQ9Ik0wIDBoNDAwdjQwMEgweiIgZmlsbD0iIzAwMDAwMCIgb3BhY2l0eT0iMC4wMSIvPjwvc3ZnPg==');mix-blend-mode:overlay;opacity:0.5;}
 
-    footer{padding:24px 0 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--border);margin-top:10px}
+    footer{padding:32px 0 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--border);margin-top:20px; text-align: center;}
 
     /* Congrats (lightweight) */
-    .confetti{position:absolute;pointer-events:none;will-change:transform,opacity;width:8px;height:8px;border-radius:2px;opacity:.9}
+    .confetti{position:absolute;pointer-events:none;will-change:transform,opacity;width:8px;height:8px;border-radius:2px;opacity:.9; z-index: 50;}
     .confetti.circle{border-radius:50%}
     .confetti.c1{background:linear-gradient(135deg,var(--primary-2),var(--accent))}
     .confetti.c2{background:linear-gradient(135deg,#d8b4fe,#a78bfa)}
@@ -120,18 +131,20 @@
   <main class="wrap">
     <!-- Sidebar with News under LinkedIn -->
     <aside class="sidebar" id="about">
-      <img class="avatar" src="image1.jpg" alt="avatar of Xiruo Wang"/>
-      <div class="name"><img src="name.png"></div>
+      <img class="avatar" src="image1.jpg" alt="avatar of Xiruo Wang" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Xiruo+Wang&size=400&background=7c3aed&color=fff';"/>
+      <div class="name"><img src="name.png" alt="Xiruo Wang" onerror="this.outerHTML='<span>Xiruo Wang</span>'" style="max-height: 40px;"></div>
       <div class="title">AI Technical Artist · Games & HCI</div>
       <div class="meta">
         <div>📍 Hangzhou / Shanghai</div>
-        <div>📧 <a href="mailto:xiruo[dot]wang[at]163[dot]com">xiruo[dot]wang[at]163[dot]com</a></div>
+        <div>📧 <a href="mailto:xiruo.wang@163.com">xiruo[dot]wang[at]163[dot]com</a></div>
         <div>💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
       </div>
 
       <section id="news" class="news">
         <h2>News</h2>
         <ul id="news-list">
+          <!-- Added New Publication to News -->
+          <li><time>Apr 2026</time> Paper accepted at <span class="act">ACM CHI EA 2026</span> — “One Kiss: Emojis as Agents of Genre Flux”</li>
           <li><time>Nov 2025</time> Tencent Game Award 2025 Nomination &amp; Invited Talk <span class="act">Tencent Game Award 2025</span></li>
           <li><time>Aug 2025</time> 1001 Nights exhibited at <span class="act">ChinaJoy 2025</span>, Shanghai</li>
           <li><time>Apr 2025</time> Presented at <span class="act">ACM CHI 2025</span> (Interactivity), Yokohama, Japan</li>
@@ -154,15 +167,33 @@
         <p><strong>Keywords</strong>: AI games · HCI · VR narrative · co-creation · generative art · level design · affective computing. Portfolio: <a href="https://www.xiruowang.com" target="_blank" rel="noreferrer">www[dot]xiruowang[dot]com</a></p>
       </section>
 
-      <!-- Publications (two items, with images, no DOI/buttons) -->
       <section id="pubs">
         <h2>Publications</h2>
         <div class="list">
+          <!-- Added CHI EA '26 -->
+          <div class="item pub-card">
+            <div class="pub-grid">
+              <figure class="thumb">
+                <img src="onekiss.jpg" alt="Preview of One Kiss" onerror="this.onerror=null; this.src='https://placehold.co/600x400/ede9fe/7c3aed?text=CHI+EA+2026'">
+              </figure>
+              <div>
+                <div class="title">One Kiss: Emojis as Agents of Genre Flux in Generative Comics</div>
+                <div class="sub"><strong class="me">Xiruo Wang</strong>, Xinyi Jiang, Ziqi Lyu · CHI EA ’26 · Barcelona, Spain</div>
+                <div class="logo-row">
+                  <span class="logo chi"><span class="dot" aria-hidden="true"></span>CHI 2026</span>
+                  <a href="https://doi.org/10.1145/3772363.3798758" target="_blank" class="logo" style="color: var(--text); transition: border-color .2s ease;" onmouseover="this.style.borderColor='var(--primary-2)'" onmouseout="this.style.borderColor='var(--border)'">
+                    <span class="dot" style="background: #3b82f6;" aria-hidden="true"></span>DOI
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- CHI EA '25 -->
           <div class="item pub-card">
             <div class="pub-grid">
               <figure class="thumb">
-                <img src="chi.jfif" alt="Screenshot from I Like Your Story">
+                <img src="chi.jfif" alt="Screenshot from I Like Your Story" onerror="this.onerror=null; this.src='https://placehold.co/600x400/ede9fe/7c3aed?text=CHI+2025'">
               </figure>
               <div>
                 <div class="title">“I Like Your Story!”: A Co-Creative Story-Crafting Game with a Persona-Driven Character Based on Generative AI</div>
@@ -178,7 +209,7 @@
           <div class="item pub-card">
             <div class="pub-grid">
               <figure class="thumb">
-                <img src="sig.jpg" alt="Exhibition view from SIGGRAPH Asia art paper">
+                <img src="sig.jpg" alt="Exhibition view from SIGGRAPH Asia art paper" onerror="this.onerror=null; this.src='https://placehold.co/600x400/ede9fe/7c3aed?text=SIGGRAPH+Asia'">
               </figure>
               <div>
                 <div class="title">Constructing Immersive Narrative Environments with Physical Interaction: 17th-Century European Fascination with China</div>
@@ -283,7 +314,6 @@
         </ul>
       </section>
 
-      <!-- Exhibitions & Talks (News-like, with Show more) -->
       <section id="exhibit" class="news">
         <h2>Exhibitions and Talks</h2>
         <ul id="exhibit-list">
@@ -305,9 +335,9 @@
       <section id="contact">
         <h2>Contact</h2>
         <div class="item">
-          <div class="title">📧 <a href="mailto:xiruo[dot]wang[dot]22[at]alumni[dot]ucl[dot]ac[dot]uk">xiruo[dot]wang[dot]22[at][dot]alumni[dot]ucl[dot]ac[dot]uk</a></div>
-           <div class="title">📧 <a href="mailto:xiruo[dot]wang[dot]163[at][dot]com">xiruo[dot]wang[dot]163[at][dot]com</a></div>
-          <div class="sub">🐙 <a href="https://github.com/xiruoplay" target="_blank" rel="noreferrer">github.com/xiruoplay</a> · 💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
+          <div class="title">📧 <a href="mailto:xiruo.wang.22@alumni.ucl.ac.uk">xiruo[dot]wang[dot]22[at]alumni[dot]ucl[dot]ac[dot]uk</a></div>
+           <div class="title" style="margin-top:8px">📧 <a href="mailto:xiruo.wang@163.com">xiruo[dot]wang[at]163[dot]com</a></div>
+          <div class="sub" style="margin-top: 16px;">🐙 <a href="https://github.com/xiruoplay" target="_blank" rel="noreferrer">github.com/xiruoplay</a> · 💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
         </div>
       </section>
     </div>
@@ -320,32 +350,43 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Sidebar News: collapse to latest 5 with Show more toggle (▾/▴)
-    (function(){
-      const list = document.getElementById('news-list');
-      if(!list) return;
+    // Reusable function for expand/collapse logic
+    function setupToggleList(listId, btnId, limit = 5) {
+      const list = document.getElementById(listId);
+      let btn = document.getElementById(btnId);
+      
+      if (!list) return;
       const items = Array.from(list.children);
-      const btn = document.getElementById('news-toggle') || (function(){const b=document.createElement('button');b.id='news-toggle';b.className='btn-lite';b.textContent='Show more ▾';b.setAttribute('aria-expanded','false');list.parentElement.appendChild(b);return b;})();
-      const limit = 5;
-      function apply(collapsed){
-        items.forEach((li, i)=> li.style.display = (collapsed && i >= limit) ? 'none' : '');
-        if(btn){ btn.textContent = collapsed ? 'Show more ▾' : 'Show less ▴'; btn.setAttribute('aria-expanded', String(!collapsed)); }
+      
+      if (!btn && items.length > limit) {
+        btn = document.createElement('button');
+        btn.id = btnId;
+        btn.className = 'btn-lite';
+        btn.textContent = 'Show more ▾';
+        btn.setAttribute('aria-expanded', 'false');
+        list.parentElement.appendChild(btn);
       }
-      let collapsed = true; apply(collapsed);
-      if(btn){ btn.addEventListener('click', ()=>{ collapsed = !collapsed; apply(collapsed); }); }
-    })();
+      
+      if (!btn) return;
+      
+      let collapsed = true;
+      function apply() {
+        items.forEach((li, i) => {
+          li.style.display = (collapsed && i >= limit) ? 'none' : '';
+        });
+        btn.textContent = collapsed ? 'Show more ▾' : 'Show less ▴';
+        btn.setAttribute('aria-expanded', String(!collapsed));
+      }
+      
+      apply();
+      btn.addEventListener('click', () => {
+        collapsed = !collapsed;
+        apply();
+      });
+    }
 
-    // Exhibitions & Talks: collapse to latest 5 with Show more toggle (▾/▴)
-    (function(){
-      const list=document.getElementById('exhibit-list');
-      const btn=document.getElementById('exhibit-toggle');
-      if(!list||!btn) return;
-      const items=[...list.children];
-      const limit=5;let collapsed=true;
-      function apply(c){items.forEach((li,i)=>li.style.display=(c&&i>=limit)?'none':'');btn.textContent=c?'Show more ▾':'Show less ▴';btn.setAttribute('aria-expanded',!c);}
-      apply(collapsed);
-      btn.addEventListener('click',()=>{collapsed=!collapsed;apply(collapsed);});
-    })();
+    setupToggleList('news-list', 'news-toggle', 5);
+    setupToggleList('exhibit-list', 'exhibit-toggle', 5);
 
     // Congrats (lightweight) on hover for Honors & Awards and Scholarships
     (function(){
