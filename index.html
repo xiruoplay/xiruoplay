@@ -86,9 +86,7 @@
     }
     .nav-submenu {
       display: none;
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0;
+      position: fixed;
       background: var(--animal-bg-card);
       border: 2.5px solid var(--animal-border-light);
       border-radius: var(--animal-radius-lg);
@@ -96,7 +94,7 @@
       padding: 8px;
       list-style: none;
       min-width: 150px;
-      z-index: 100;
+      z-index: 200;
       animation: animal-zoom-in 0.2s ease;
     }
     .nav-dropdown.open .nav-submenu { display: block; }
@@ -114,10 +112,11 @@
       background: var(--animal-primary-bg);
       color: var(--animal-primary-active);
     }
-    /* Mobile: submenu becomes inline */
+    /* Mobile: submenu becomes inline, override fixed positioning */
     @media (max-width: 600px) {
       .nav-submenu {
-        position: static;
+        position: static !important;
+        top: auto !important; left: auto !important;
         box-shadow: none;
         border: none;
         padding: 0 0 0 16px;
@@ -128,13 +127,10 @@
       .nav-drop-btn { width: 100%; text-align: center; }
     }
 
-    /* Draggable nav tags */
-    .toc li { user-select: none; }
-    .toc li a, .nav-drop-btn { cursor: grab; }
-    .toc li.dragging a, .toc li.dragging .nav-drop-btn { cursor: grabbing; opacity: 0.7; }
-    .toc li.returning a, .toc li.returning .nav-drop-btn {
-      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+    /* Draggable .logo tags (conference badges) */
+    .logo { cursor: grab; user-select: none; }
+    .logo.dragging { cursor: grabbing; opacity: 0.75; z-index: 20; }
+    .logo.returning { transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) !important; }
   </style>
 </head>
 <body>
@@ -406,16 +402,31 @@
     setupToggleList('news-list', 'news-toggle', 3);
     setupToggleList('exhibit-list', 'exhibit-toggle', 5);
 
-    // CV dropdown
+    // CV dropdown — uses fixed positioning to escape overflow:auto clipping
     const dropdowns = document.querySelectorAll('.nav-dropdown');
     dropdowns.forEach(dd => {
       const btn = dd.querySelector('.nav-drop-btn');
+      const submenu = dd.querySelector('.nav-submenu');
+
+      function positionSubmenu() {
+        const rect = btn.getBoundingClientRect();
+        submenu.style.top = (rect.bottom + 6) + 'px';
+        submenu.style.left = rect.left + 'px';
+      }
+
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const isOpen = dd.classList.toggle('open');
-        btn.setAttribute('aria-expanded', String(isOpen));
+        const isOpen = !dd.classList.contains('open');
+        // Close all first
+        dropdowns.forEach(d => { d.classList.remove('open'); d.querySelector('.nav-drop-btn').setAttribute('aria-expanded', 'false'); });
+        if (isOpen) {
+          dd.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+          positionSubmenu();
+        }
       });
-      dd.querySelector('.nav-submenu').addEventListener('click', () => {
+
+      submenu.addEventListener('click', () => {
         dd.classList.remove('open');
         btn.setAttribute('aria-expanded', 'false');
       });
@@ -427,39 +438,40 @@
       });
     });
 
-    // Draggable nav tags — drag freely, spring back after 1.5s
+    // Draggable .logo tags (conference badges) — spring back after 1.5s
     (function() {
-      const tags = document.querySelectorAll('.toc > li');
-      tags.forEach(li => {
+      function makeDraggable(el) {
         let startX = 0, startY = 0, dx = 0, dy = 0;
         let returnTimer = null;
 
+        el.addEventListener('mousedown', onDown);
+        el.addEventListener('touchstart', onDown, { passive: true });
+
         function onDown(e) {
-          // Don't drag if clicking a link/button for navigation
           if (e.type === 'mousedown' && e.button !== 0) return;
           const isTouch = e.type === 'touchstart';
           const cx = isTouch ? e.touches[0].clientX : e.clientX;
           const cy = isTouch ? e.touches[0].clientY : e.clientY;
           startX = cx - dx;
           startY = cy - dy;
-          li.classList.add('dragging');
-          li.classList.remove('returning');
           if (returnTimer) clearTimeout(returnTimer);
-          li.style.transition = 'none';
-          li.style.position = 'relative';
-          li.style.zIndex = '20';
+          el.classList.add('dragging');
+          el.classList.remove('returning');
+          el.style.transition = 'opacity 0.2s, box-shadow 0.2s';
+          el.style.position = 'relative';
+          el.style.zIndex = '50';
 
           const onMove = (ev) => {
             const mx = ev.touches ? ev.touches[0].clientX : ev.clientX;
             const my = ev.touches ? ev.touches[0].clientY : ev.clientY;
             dx = mx - startX;
             dy = my - startY;
-            li.style.transform = `translate(${dx}px, ${dy}px)`;
+            el.style.transform = `translate(${dx}px, ${dy}px)`;
           };
+
           const onUp = (ev) => {
-            // If barely moved, treat as click — do nothing extra
             const moved = Math.abs(dx) > 4 || Math.abs(dy) > 4;
-            li.classList.remove('dragging');
+            el.classList.remove('dragging');
             document.removeEventListener('mousemove', onMove);
             document.removeEventListener('mouseup', onUp);
             document.removeEventListener('touchmove', onMove);
@@ -467,30 +479,31 @@
 
             if (!moved) return;
 
-            // Prevent the click from navigating
-            ev.preventDefault && ev.preventDefault();
+            // Block click-through after drag
+            const blockClick = (ev2) => { ev2.preventDefault(); ev2.stopPropagation(); };
+            el.addEventListener('click', blockClick, { once: true });
 
-            // Spring back after 1.5s
             returnTimer = setTimeout(() => {
-              li.classList.add('returning');
-              li.style.transition = '';
-              li.style.transform = 'translate(0,0)';
+              el.classList.add('returning');
+              el.style.transition = '';
+              el.style.transform = 'translate(0,0)';
               dx = 0; dy = 0;
               setTimeout(() => {
-                li.classList.remove('returning');
-                li.style.zIndex = '';
+                el.classList.remove('returning');
+                el.style.zIndex = '';
+                el.style.position = '';
               }, 600);
             }, 1500);
           };
+
           document.addEventListener('mousemove', onMove);
           document.addEventListener('mouseup', onUp);
           document.addEventListener('touchmove', onMove, { passive: true });
           document.addEventListener('touchend', onUp);
         }
+      }
 
-        li.addEventListener('mousedown', onDown);
-        li.addEventListener('touchstart', onDown, { passive: true });
-      });
+      document.querySelectorAll('.logo').forEach(makeDraggable);
     })();
 
     // Load featured portfolio items
