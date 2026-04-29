@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow">
   <title>xiruoplay | Home</title>
-  <meta name="description" content="Xiruo Wang | AI-driven games, HCI, immersive art & tech — portfolio and publications." />
+  <meta name="description" content="Xiruo Wang | AI-driven games, HCI, immersive narratives — portfolio and publications." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&family=M+PLUS+Rounded+1c:wght@500;700;900&display=swap" rel="stylesheet">
@@ -89,7 +89,11 @@
     .nav {
       display: flex; align-items: center; gap: var(--animal-spacing-xl);
       padding: var(--animal-spacing-lg) 0;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
     }
+    .nav::-webkit-scrollbar { display: none; }
     .nav .brand {
       font-weight: 900; font-size: 20px;
       color: var(--animal-text);
@@ -98,18 +102,32 @@
       border-radius: var(--animal-radius-pill);
       border: 2.5px solid var(--animal-border-light);
       box-shadow: 0 3px 0 0 #bdaea0;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
-    .nav ul { display: flex; gap: var(--animal-spacing-lg); list-style: none; flex-wrap: wrap; }
+    .nav ul { display: flex; gap: var(--animal-spacing-sm); list-style: none; flex-wrap: nowrap; flex-shrink: 0; }
     .nav a {
       position: relative; padding: 6px 14px; font-weight: 700; font-size: var(--animal-font-size-base);
       color: var(--animal-text-brown);
       border-radius: var(--animal-radius-pill);
+      white-space: nowrap;
       transition: all var(--animal-duration-base) var(--animal-ease);
     }
     .nav a:hover {
       background: var(--animal-primary-bg);
       color: var(--animal-primary-active);
       transform: translateY(-2px);
+    }
+    .nav a.active {
+      background: var(--animal-primary);
+      color: #fff;
+      box-shadow: 0 3px 0 0 var(--animal-primary-active);
+      transform: translateY(0);
+    }
+    .nav a.active:hover {
+      background: var(--animal-primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 0 0 var(--animal-primary-active);
     }
 
     /* Layout */
@@ -359,7 +377,7 @@
       <div class="title-role">AI Technical Artist · Games & HCI</div>
       <div class="meta">
         <div>📍 Hangzhou / Shanghai</div>
-        <div>📧 xiruo[dot]wang[at]163[dot]com</a></div>
+        <div>📧 <a href="mailto:xiruo.wang@163.com">xiruo[dot]wang[at]163[dot]com</a></div>
         <div>💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
       </div>
 
@@ -463,7 +481,7 @@
         <h2>Work</h2>
         <div class="list">
           <div class="item">
-            <div class="title">Ada Eden — Technical Designer & Artist / Researcher</div>
+            <div class="title">Ada Eden — AI Technical Artist / Researcher</div>
             <div class="sub">Sep 2025 – Present · Shanghai / Remote</div>
             <ul class="sub">
               <li>Prototype LLM-driven mechanics; integrate AIGC into narrative pipelines for emergent play.</li>
@@ -553,9 +571,9 @@
       <section id="contact">
         <h2>Contact</h2>
         <div class="item">
-          <div class="title">📧 xiruo[dot]wang[dot]22[at]alumni[dot]ucl[dot]ac[dot]uk</a></div>
-          <div class="title" style="margin-top: 8px;">📧 xiruo[dot]wang[at]163[dot]com</a></div>
-          <div class="sub" style="margin-top: 16px;">💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
+          <div class="title">📧 <a href="mailto:xiruo.wang.22@alumni.ucl.ac.uk">xiruo[dot]wang[dot]22[at]alumni[dot]ucl[dot]ac[dot]uk</a></div>
+          <div class="title" style="margin-top: 8px;">📧 <a href="mailto:xiruo.wang@163.com">xiruo[dot]wang[at]163[dot]com</a></div>
+          <div class="sub" style="margin-top: 16px;">🐙 <a href="https://github.com/xiruoplay" target="_blank" rel="noreferrer">github.com/xiruoplay</a> · 💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
         </div>
       </section>
     </div>
@@ -596,6 +614,27 @@
 
     setupToggleList('news-list', 'news-toggle', 5);
     setupToggleList('exhibit-list', 'exhibit-toggle', 5);
+
+    // Nav active state: click + scroll-spy
+    const navLinks = document.querySelectorAll('.nav a[href^="#"]');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+    const sections = Array.from(document.querySelectorAll('main section[id], aside section[id]'));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navLinks.forEach(l => {
+            l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+    sections.forEach(s => observer.observe(s));
 
     (function(){
       const targets = document.querySelectorAll('.awards li, .scholar li');
