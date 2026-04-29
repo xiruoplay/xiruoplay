@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,117 +8,334 @@
   <meta name="description" content="Xiruo Wang | AI-driven games, HCI, immersive narratives — portfolio and publications." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&family=M+PLUS+Rounded+1c:wght@500;700;900&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#ffffff;--text:#0f172a;--muted:#5b5b66;--primary:#7c3aed;--primary-2:#a78bfa;--primary-3:#5b21b6;--accent:#c084fc;--card:#faf5ff;--border:#ede9fe;--ok:#16a34a;--ring:color-mix(in srgb, var(--primary) 45%, transparent)}
-    @media(prefers-color-scheme:dark){:root{--bg:#0b0a16;--text:#e9e7ff;--muted:#b5b3c9;--primary:#a78bfa;--primary-2:#c4b5fd;--primary-3:#312e81;--accent:#c084fc;--card:#141326;--border:#2a2640;--ok:#22c55e;--ring:color-mix(in srgb, var(--primary) 55%, transparent)}}
-    *{box-sizing:border-box}
-    html {scroll-behavior:smooth;}
-    
-    /* UX 优化：增加全局行高，降低文字密度 */
-    html,body{margin:0;padding:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; line-height:1.65;
-      background:radial-gradient(1200px 800px at 10% -10%, color-mix(in srgb, var(--primary-2) 8%, var(--bg)) 0%, transparent 52%),
-                 radial-gradient(1000px 700px at 120% 10%, color-mix(in srgb, var(--accent) 6%, var(--bg)) 0%, transparent 48%),
-                 var(--bg);
-      background-image:linear-gradient(to bottom right,rgba(255,255,255,0.01),rgba(0,0,0,0.01));
-      background-blend-mode:overlay;}
-      
-    a{color:var(--primary);text-decoration:none}
-    img{max-width:100%;display:block}
-    .wrap{max-width:1100px;margin:0 auto;padding:0 24px} /* 稍微增加屏幕两侧安全距离 */
+    :root {
+      --animal-font-family: 'Nunito', 'Zen Maru Gothic', 'M PLUS Rounded 1c', -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      --animal-font-size-sm: 12px;
+      --animal-font-size-base: 14px;
+      --animal-font-size-lg: 16px;
+      --animal-line-height: 1.5715;
+      --animal-primary: #19c8b9;
+      --animal-primary-hover: #3dd4c6;
+      --animal-primary-active: #11a89b;
+      --animal-primary-bg: #e6f9f6;
+      --animal-success: #6fba2c;
+      --animal-success-hover: #85cc45;
+      --animal-success-active: #5a9e1e;
+      --animal-warning: #f5c31c;
+      --animal-warning-hover: #f7d04a;
+      --animal-error: #e05a5a;
+      --animal-error-hover: #e87878;
+      --animal-text: #794f27;
+      --animal-text-secondary: #9f927d;
+      --animal-text-disabled: #c4b89e;
+      --animal-text-brown: #725d42;
+      --animal-text-body: #8a7b66;
+      --animal-bg: #f8f8f0;
+      --animal-bg-secondary: #f0e8d8;
+      --animal-bg-card: rgb(247, 243, 223);
+      --animal-bg-disabled: #f0ece2;
+      --animal-border: #9f927d;
+      --animal-border-hover: #827157;
+      --animal-border-light: #c4b89e;
+      --animal-border-input: #d4c9b4;
+      --animal-spacing-xs: 4px;
+      --animal-spacing-sm: 8px;
+      --animal-spacing-md: 12px;
+      --animal-spacing-lg: 16px;
+      --animal-spacing-xl: 24px;
+      --animal-radius-sm: 12px;
+      --animal-radius-base: 18px;
+      --animal-radius-lg: 24px;
+      --animal-radius-pill: 50px;
+      --animal-shadow-sm: 0 2px 4px 0 rgba(61, 52, 40, 0.06);
+      --animal-shadow-base: 0 3px 10px 0 rgba(61, 52, 40, 0.1);
+      --animal-shadow-lg: 0 8px 24px 0 rgba(61, 52, 40, 0.14);
+      --animal-shadow-card: 0 4px 10px rgba(107, 92, 67, 0.42);
+      --animal-shadow-thick: 0 5px 0 0 #bdaea0;
+      --animal-height-sm: 32px;
+      --animal-height-base: 40px;
+      --animal-height-lg: 48px;
+      --animal-duration-fast: 0.15s;
+      --animal-duration-base: 0.25s;
+      --animal-duration-slow: 0.35s;
+      --animal-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--animal-font-family);
+      background: var(--animal-bg);
+      color: var(--animal-text);
+      line-height: 1.65;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--animal-primary-active); text-decoration: none; font-weight: 600; transition: color var(--animal-duration-base) var(--animal-ease); }
+    a:hover { color: var(--animal-primary); }
+    img { max-width: 100%; display: block; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 var(--animal-spacing-xl); }
 
     /* Header & Nav */
-    header{position:sticky;top:0;z-index:10;background:linear-gradient( to right, color-mix(in srgb, var(--bg) 90%, transparent), color-mix(in srgb, var(--primary-2) 10%, var(--bg)) );backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--border)}
-    .nav{display:flex;align-items:center;gap:24px;padding:16px 0} /* 增加导航栏内高 */
-    .nav .brand{font-weight:800;background:linear-gradient(90deg, var(--primary-3), var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent; font-size: 18px;}
-    .nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0; flex-wrap: wrap;}
-    .nav a{position:relative;padding-bottom:4px; font-weight: 500;}
-    .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:linear-gradient(90deg, var(--primary), var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
-    .nav a:hover::after{transform:scaleX(1)}
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--animal-bg-card);
+      border-bottom: 3px solid var(--animal-border-light);
+      box-shadow: 0 3px 0 0 rgba(189, 174, 160, 0.3);
+    }
+    .nav {
+      display: flex; align-items: center; gap: var(--animal-spacing-xl);
+      padding: var(--animal-spacing-lg) 0;
+    }
+    .nav .brand {
+      font-weight: 900; font-size: 20px;
+      color: var(--animal-text);
+      background: var(--animal-bg);
+      padding: 6px 20px;
+      border-radius: var(--animal-radius-pill);
+      border: 2.5px solid var(--animal-border-light);
+      box-shadow: 0 3px 0 0 #bdaea0;
+    }
+    .nav ul { display: flex; gap: var(--animal-spacing-lg); list-style: none; flex-wrap: wrap; }
+    .nav a {
+      position: relative; padding: 6px 14px; font-weight: 700; font-size: var(--animal-font-size-base);
+      color: var(--animal-text-brown);
+      border-radius: var(--animal-radius-pill);
+      transition: all var(--animal-duration-base) var(--animal-ease);
+    }
+    .nav a:hover {
+      background: var(--animal-primary-bg);
+      color: var(--animal-primary-active);
+      transform: translateY(-2px);
+    }
 
-    /* Layout - UX 优化：大幅增加侧边栏与主内容的间距 (gap: 80px), 优化列宽比例 */
-    main{display:grid;grid-template-columns:280px 1fr;gap:80px;padding:40px 0}
-    @media(max-width:900px){main{grid-template-columns:1fr;gap:40px}}
+    /* Layout */
+    main { display: grid; grid-template-columns: 280px 1fr; gap: 60px; padding: 40px 0; }
+    @media(max-width: 900px) { main { grid-template-columns: 1fr; gap: 40px; } }
 
-    /* Sidebar - UX 优化：支持独立内部滚动，并定制极简滚动条 */
-    .sidebar{position:sticky;top:80px;align-self:start;max-height:calc(100vh - 100px);overflow-y:auto;padding-right:16px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
-    .sidebar::-webkit-scrollbar{width:4px;}
-    .sidebar::-webkit-scrollbar-track{background:transparent;}
-    .sidebar::-webkit-scrollbar-thumb{background-color:transparent;border-radius:4px;transition:background-color 0.2s ease;}
-    .sidebar:hover::-webkit-scrollbar-thumb{background-color:var(--border);}
-    
-    /* UX 优化：头像缩小约 1/3，使其显得更克制精致 */
-    .avatar{border-radius:50%;overflow:hidden;border:1px solid var(--border);background:var(--card);width:66%;max-width:180px;aspect-ratio:1/1;box-shadow:0 0 0 0 rgba(0,0,0,0);transition:box-shadow .2s ease}
-    .avatar:hover{box-shadow:0 0 0 6px var(--ring)}
-    .name{font-size:28px;font-weight:800;margin:16px 0 6px}
-    .title{color:var(--muted);margin:0 0 16px; font-size: 15px;}
-    .meta{display:grid;gap:12px;margin:16px 0; font-size: 14px;} /* 增加信息间距 */
+    /* Sidebar */
+    .sidebar {
+      position: sticky; top: 80px; align-self: start;
+      max-height: calc(100vh - 100px); overflow-y: auto;
+      padding-right: var(--animal-spacing-lg);
+      scrollbar-width: thin; scrollbar-color: var(--animal-border-light) transparent;
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background-color: transparent; border-radius: 4px; }
+    .sidebar:hover::-webkit-scrollbar-thumb { background-color: var(--animal-border-light); }
 
-    /* Sections - UX 优化：拉开区块间距，提供视觉停顿 */
-    section{padding:40px 0;border-bottom:1px solid rgba(255,255,255,0.18);position:relative}
-    section::before,section::after{content:"";position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,0.16);backdrop-filter:blur(2px)}
-    section::before{top:0}section::after{bottom:0}
-    h2{margin:0 0 24px;font-size:24px;position:relative; font-weight: 700;} /* 加大标题及其下边距 */
-    h2::after{content:"";display:block;width:64px;height:4px;border-radius:999px;margin-top:8px;background:linear-gradient(90deg, var(--primary), var(--accent))}
-    
-    p { margin: 0 0 16px 0; }
+    .avatar {
+      border-radius: 50%; overflow: hidden;
+      border: 4px solid var(--animal-border-light);
+      background: var(--animal-bg-card);
+      width: 66%; max-width: 180px; aspect-ratio: 1/1;
+      box-shadow: 0 4px 0 0 #bdaea0;
+      transition: all var(--animal-duration-base) var(--animal-ease);
+    }
+    .avatar:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 0 0 #bdaea0;
+    }
+    .name { font-size: 28px; font-weight: 900; margin: var(--animal-spacing-lg) 0 6px; color: var(--animal-text); }
+    .title-role { color: var(--animal-text-body); margin: 0 0 var(--animal-spacing-lg); font-size: 15px; font-weight: 600; }
+    .meta { display: grid; gap: var(--animal-spacing-md); margin: var(--animal-spacing-lg) 0; font-size: var(--animal-font-size-base); }
+
+    /* Sections */
+    section { padding: 40px 0; border-bottom: 3px solid var(--animal-border-light); }
+    h2 {
+      margin: 0 0 var(--animal-spacing-xl); font-size: 24px; font-weight: 900;
+      color: var(--animal-text);
+      display: inline-block;
+      background: var(--animal-bg-card);
+      padding: var(--animal-spacing-md) var(--animal-spacing-xl);
+      border-radius: 40px 35px 45px 38px / 38px 45px 35px 40px;
+      box-shadow: var(--animal-shadow-sm);
+    }
+    p { margin: 0 0 var(--animal-spacing-lg) 0; color: var(--animal-text-body); font-weight: 500; }
     p:last-child { margin-bottom: 0; }
 
-    /* Lists & Cards - UX 优化：卡片内外部留白双倍增加，减缓压迫感 */
-    .list{display:grid;gap:16px} /* 列表项距离拉开 */
-    .item,.news li,.awards li,.scholar li{padding:20px;border:1px solid var(--border);border-radius:14px;background:linear-gradient(180deg, var(--card), color-mix(in srgb, var(--primary-2) 5%, var(--card)));box-shadow:0 1px 6px rgba(0,0,0,0.08),inset 0 0 0.5px rgba(255,255,255,0.2);position:relative;transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease}
-    .item .title{font-weight:700;color:var(--text); font-size: 16px;}
-    .item .sub{color:var(--muted);font-size:14px;margin-top:6px}
-    ul.sub { margin: 10px 0 0; padding-left: 20px; font-size: 14px; color: var(--muted); }
+    /* Cards & Items */
+    .list { display: grid; gap: var(--animal-spacing-lg); }
+    .item {
+      padding: 20px var(--animal-spacing-xl);
+      background: var(--animal-bg-card);
+      color: var(--animal-text-brown);
+      border-radius: 20px;
+      box-shadow: var(--animal-shadow-card);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(114, 93, 66, 0.15);
+    }
+    .item .title { font-weight: 700; color: var(--animal-text); font-size: var(--animal-font-size-lg); }
+    .item .sub { color: var(--animal-text-body); font-size: var(--animal-font-size-base); margin-top: 6px; font-weight: 500; }
+    ul.sub { margin: 10px 0 0; padding-left: 20px; font-size: var(--animal-font-size-base); color: var(--animal-text-body); }
     ul.sub li { margin-bottom: 6px; }
 
-    /* Hover divider animation - 配合新的 padding 同步调整线条位置 */
-    .news li::after,.awards li::after,.scholar li::after,.hoverize .item::after{content:"";position:absolute;left:20px;right:20px;bottom:12px;height:1px;background:var(--border);transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
-    .news li:hover,.awards li:hover,.scholar li:hover,.hoverize .item:hover{border-color:color-mix(in srgb, var(--primary) 40%, var(--border));box-shadow:0 4px 14px color-mix(in srgb, var(--primary) 12%, transparent);transform:translateY(-2px)}
-    .news li:hover::after,.awards li:hover::after,.scholar li:hover::after,.hoverize .item:hover::after{transform:scaleX(1)}
+    /* News */
+    .news ul { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--animal-spacing-md); }
+    .news li {
+      font-size: var(--animal-font-size-base); font-weight: 500;
+      padding: var(--animal-spacing-lg) var(--animal-spacing-xl);
+      background: var(--animal-bg-card);
+      border-radius: 20px;
+      box-shadow: var(--animal-shadow-sm);
+      color: var(--animal-text-body);
+      transition: all 0.3s ease;
+    }
+    .news li:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(114, 93, 66, 0.12);
+    }
+    .news time {
+      color: var(--animal-primary-active); font-size: 13px; font-weight: 700;
+      display: block; margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
 
-    /* Lists Resets */
-    .news ul, .awards ul, .scholar ul {margin:0;padding:0;list-style:none; display:grid; gap:12px;} /* 卡片统一使用 grid 布局拉开距离 */
-    .news li { font-size: 14px; }
-    .news time{color:var(--muted);font-size:13px; font-weight: 500; display:block; margin-bottom:4px;} /* 时间独立一行，更清晰 */
-    
-    .btn-lite{border:1px solid var(--border);background:linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--primary-2) 6%, var(--bg)));padding:8px 16px;border-radius:999px;font-size:13px;font-weight: 500;cursor:pointer;transition:box-shadow .2s ease, transform .2s ease;margin-top:12px; width: 100%;}
-    .btn-lite:hover{box-shadow:0 6px 20px color-mix(in srgb, var(--primary) 20%, transparent);transform:translateY(-1px)}
-    .act{transition:color .2s ease;font-weight:600; color: var(--text);}
-    .act:hover{color:var(--primary)}
+    /* Awards & Scholarships */
+    .awards ul, .scholar ul {
+      margin: 0; padding: 0; list-style: none; display: grid; gap: var(--animal-spacing-md);
+    }
+    .awards li, .scholar li {
+      padding: var(--animal-spacing-lg) var(--animal-spacing-xl);
+      background: var(--animal-bg-card);
+      border-radius: 20px;
+      box-shadow: var(--animal-shadow-sm);
+      font-weight: 600;
+      color: var(--animal-text-brown);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .awards li:hover, .scholar li:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(114, 93, 66, 0.12);
+    }
+
+    /* Button */
+    .btn-lite {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: var(--animal-height-base);
+      padding: 0 20px;
+      font-family: var(--animal-font-family);
+      font-size: var(--animal-font-size-base);
+      font-weight: 600;
+      color: var(--animal-text-brown);
+      background: var(--animal-bg);
+      border: 2px solid var(--animal-border-light);
+      border-radius: var(--animal-radius-pill);
+      box-shadow: var(--animal-shadow-thick);
+      cursor: pointer;
+      transition: all var(--animal-duration-base) var(--animal-ease);
+      margin-top: var(--animal-spacing-md);
+      width: 100%;
+    }
+    .btn-lite:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 0 0 #bdaea0;
+    }
+    .btn-lite:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 0 #bdaea0;
+    }
+
+    .act { font-weight: 700; color: var(--animal-text); transition: color var(--animal-duration-base) var(--animal-ease); }
+    .act:hover { color: var(--animal-primary); }
 
     /* Publications */
-    figure{margin:0}
-    .pub-grid{display:grid;grid-template-columns:minmax(180px,220px) 1fr;gap:24px;align-items:start} /* 增加缩略图与文字的间距 */
-    .thumb{width:100%;height:0;padding-bottom:66%;border-radius:10px;background:var(--border);overflow:hidden;position:relative}
-    .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-    @media(max-width:700px){.pub-grid{grid-template-columns:1fr}.thumb{padding-bottom:56%}}
-    .logo-row{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
-    .logo{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--border);border-radius:999px;background:linear-gradient(180deg, var(--card), color-mix(in srgb, var(--primary-2) 8%, var(--card)));font-size:12px;font-weight:700;letter-spacing:.3px;box-shadow:0 1px 0 color-mix(in srgb, var(--primary-2) 10%, transparent) inset}
-    .logo .dot{width:8px;height:8px;border-radius:50%}
-    .logo.chi .dot{background:#ef4444}
-    .logo.sig .dot{background:#06b6d4}
-    .me{font-weight:800; text-decoration: underline; text-decoration-color: var(--primary-2); text-underline-offset: 3px;}
-    .me:hover{color:var(--primary)}
+    figure { margin: 0; }
+    .pub-grid { display: grid; grid-template-columns: minmax(180px, 220px) 1fr; gap: var(--animal-spacing-xl); align-items: start; }
+    .thumb {
+      width: 100%; height: 0; padding-bottom: 66%;
+      border-radius: var(--animal-radius-base);
+      background: var(--animal-bg-secondary);
+      overflow: hidden; position: relative;
+      border: 3px solid var(--animal-border-light);
+    }
+    .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    @media(max-width: 700px) { .pub-grid { grid-template-columns: 1fr; } .thumb { padding-bottom: 56%; } }
 
-    /* Noise overlay */
-    body::after{content:"";position:fixed;inset:0;pointer-events:none;background:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGZpbHRlciBpZD0ibm9pc2UiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjAuNSIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNub2lzZSkiIGQ9Ik0wIDBoNDAwdjQwMEgweiIgZmlsbD0iIzAwMDAwMCIgb3BhY2l0eT0iMC4wMSIvPjwvc3ZnPg==');mix-blend-mode:overlay;opacity:0.5;}
+    .logo-row { display: flex; gap: 10px; align-items: center; margin-top: var(--animal-spacing-md); flex-wrap: wrap; }
+    .logo {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px var(--animal-spacing-md);
+      background: var(--animal-bg-card);
+      border: 2px solid var(--animal-border-light);
+      border-radius: var(--animal-radius-pill);
+      font-size: var(--animal-font-size-sm); font-weight: 700;
+      box-shadow: 0 2px 0 0 #bdaea0;
+      transition: all var(--animal-duration-base) var(--animal-ease);
+    }
+    .logo:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 0 0 #bdaea0;
+    }
+    .logo .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .logo.chi .dot { background: #fc736d; }
+    .logo.sig .dot { background: #82d5bb; }
+    .me {
+      font-weight: 900;
+      text-decoration: underline;
+      text-decoration-color: var(--animal-primary);
+      text-underline-offset: 3px;
+      color: var(--animal-text);
+    }
+    .me:hover { color: var(--animal-primary); }
 
-    footer{padding:32px 0 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--border);margin-top:20px; text-align: center;}
+    /* Macaron accent tags for keywords */
+    strong { color: var(--animal-text); }
 
-    /* Congrats (lightweight) */
-    .confetti{position:absolute;pointer-events:none;will-change:transform,opacity;width:8px;height:8px;border-radius:2px;opacity:.9; z-index: 50;}
-    .confetti.circle{border-radius:50%}
-    .confetti.c1{background:linear-gradient(135deg,var(--primary-2),var(--accent))}
-    .confetti.c2{background:linear-gradient(135deg,#d8b4fe,#a78bfa)}
-    .confetti.c3{background:linear-gradient(135deg,#c084fc,#7c3aed)}
-    @keyframes congratsUp{0%{transform:translate(var(--x,0),var(--y,0)) rotate(0);opacity:.9}100%{transform:translate(calc(var(--x,0) + var(--dx,0)),calc(var(--y,0) - var(--rise,90px))) rotate(var(--rot,360deg));opacity:0}}
+    /* Footer */
+    footer {
+      padding: 32px 0 40px;
+      color: var(--animal-text-body);
+      font-size: var(--animal-font-size-base); font-weight: 600;
+      text-align: center;
+      background: var(--animal-bg-secondary);
+      border-top: 3px solid var(--animal-border-light);
+      margin-top: 20px;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: absolute; pointer-events: none; will-change: transform, opacity;
+      width: 8px; height: 8px; border-radius: 2px; opacity: .9; z-index: 50;
+    }
+    .confetti.circle { border-radius: 50%; }
+    .confetti.c1 { background: linear-gradient(135deg, #f8a6b2, #b77dee); }
+    .confetti.c2 { background: linear-gradient(135deg, #82d5bb, #889df0); }
+    .confetti.c3 { background: linear-gradient(135deg, #f7cd67, #e59266); }
+    @keyframes congratsUp {
+      0% { transform: translate(var(--x, 0), var(--y, 0)) rotate(0); opacity: .9; }
+      100% { transform: translate(calc(var(--x, 0) + var(--dx, 0)), calc(var(--y, 0) - var(--rise, 90px))) rotate(var(--rot, 360deg)); opacity: 0; }
+    }
+
+    /* Decorative leaf */
+    body::before {
+      content: "🍃";
+      position: fixed;
+      bottom: 24px; right: 24px;
+      font-size: 32px;
+      opacity: 0.3;
+      pointer-events: none;
+      animation: leaf-sway 4s ease-in-out infinite;
+    }
+    @keyframes leaf-sway {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(10deg); }
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap nav">
-      <div class="brand">xiruoplay</div>
+      <div class="brand">🏝️ xiruoplay</div>
       <nav>
         <ul class="toc">
           <li><a href="#aboutme">About</a></li>
@@ -136,11 +353,10 @@
   </header>
 
   <main class="wrap">
-    <!-- Sidebar with News under LinkedIn -->
     <aside class="sidebar" id="about">
-      <img class="avatar" src="figures/image1.jpg" alt="avatar of Xiruo Wang" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Xiruo+Wang&size=400&background=7c3aed&color=fff';"/>
+      <img class="avatar" src="figures/image1.jpg" alt="avatar of Xiruo Wang" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Xiruo+Wang&size=400&background=19c8b9&color=fff';"/>
       <div class="name"><img src="figures/name.png" alt="Xiruo Wang" onerror="this.outerHTML='<span>Xiruo Wang</span>'" style="max-height: 40px;"></div>
-      <div class="title">AI Technical Artist · Games & HCI</div>
+      <div class="title-role">AI Technical Artist · Games & HCI</div>
       <div class="meta">
         <div>📍 Hangzhou / Shanghai</div>
         <div>📧 <a href="mailto:xiruo.wang@163.com">xiruo[dot]wang[at]163[dot]com</a></div>
@@ -150,12 +366,11 @@
       <section id="news" class="news">
         <h2>News</h2>
         <ul id="news-list">
-          <!-- Added New Publication to News -->
-          <li><time>Apr 2026</time> Paper accepted at <span class="act">ACM CHI EA 2026</span> — “One Kiss: Emojis as Agents of Genre Flux”</li>
+          <li><time>Apr 2026</time> Paper accepted at <span class="act">ACM CHI EA 2026</span> — "One Kiss: Emojis as Agents of Genre Flux"</li>
           <li><time>Nov 2025</time> Tencent Game Award 2025 Nomination &amp; Invited Talk <span class="act">Tencent Game Award 2025</span></li>
           <li><time>Aug 2025</time> 1001 Nights exhibited at <span class="act">ChinaJoy 2025</span>, Shanghai</li>
           <li><time>Apr 2025</time> Presented at <span class="act">ACM CHI 2025</span> (Interactivity), Yokohama, Japan</li>
-          <li><time>Feb 2025</time> Paper accepted at <span class="act">ACM CHI EA 2025</span> — “I Like Your Story!”</li>
+          <li><time>Feb 2025</time> Paper accepted at <span class="act">ACM CHI EA 2025</span> — "I Like Your Story!"</li>
           <li><time>Dec 2024</time> Art Paper presented at <span class="act">SIGGRAPH Asia 2024</span>, Tokyo, Japan</li>
           <li><time>Jan 2024</time> Graduated with a Merit Master's degree in Architecture from University College London 🎓</li>
           <li><time>Oct 2024</time> AI-native game "1001 Nights" demo launched on <span class="act">Steam</span></li>
@@ -166,7 +381,6 @@
       </section>
     </aside>
 
-    <!-- Main content in requested order -->
     <div>
       <section id="aboutme">
         <h2>About Me</h2>
@@ -177,34 +391,32 @@
       <section id="pubs">
         <h2>Publications</h2>
         <div class="list">
-          <!-- Added CHI EA '26 -->
           <div class="item pub-card">
             <div class="pub-grid">
               <figure class="thumb">
-                <img src="figures/figure1.png" alt="Preview of One Kiss" onerror="this.onerror=null; this.src='https://placehold.co/600x400/ede9fe/7c3aed?text=CHI+EA+2026'">
+                <img src="figures/figure1.png" alt="Preview of One Kiss" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f0e8d8/794f27?text=CHI+EA+2026'">
               </figure>
               <div>
                 <div class="title">One Kiss: Emojis as Agents of Genre Flux in Generative Comics</div>
-                <div class="sub"><strong class="me">Xiruo Wang</strong>, Xinyi Jiang, Ziqi Lyu · CHI EA ’26 · Barcelona, Spain</div>
+                <div class="sub"><strong class="me">Xiruo Wang</strong>, Xinyi Jiang, Ziqi Lyu · CHI EA '26 · Barcelona, Spain</div>
                 <div class="logo-row">
                   <span class="logo chi"><span class="dot" aria-hidden="true"></span>CHI 2026</span>
-                  <a href="https://doi.org/10.1145/3772363.3798758" target="_blank" class="logo" style="color: var(--text); transition: border-color .2s ease;" onmouseover="this.style.borderColor='var(--primary-2)'" onmouseout="this.style.borderColor='var(--border)'">
-                    <span class="dot" style="background: #3b82f6;" aria-hidden="true"></span>DOI
+                  <a href="https://doi.org/10.1145/3772363.3798758" target="_blank" class="logo" style="color: var(--animal-text);">
+                    <span class="dot" style="background: #889df0;" aria-hidden="true"></span>DOI
                   </a>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- CHI EA '25 -->
           <div class="item pub-card">
             <div class="pub-grid">
               <figure class="thumb">
-                <img src="figures/chi.jfif" alt="Screenshot from I Like Your Story" onerror="this.onerror=null; this.src='https://placehold.co/600x400/ede9fe/7c3aed?text=CHI+2025'">
+                <img src="figures/chi.jfif" alt="Screenshot from I Like Your Story" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f0e8d8/794f27?text=CHI+2025'">
               </figure>
               <div>
-                <div class="title">“I Like Your Story!”: A Co-Creative Story-Crafting Game with a Persona-Driven Character Based on Generative AI</div>
-                <div class="sub">Jiaying Fu, <strong class="me">Xiruo Wang</strong>, Kate Vi, Zhouyi Li, Chuyan Xu, Yuqian Sun · CHI EA ’25 · Yokohama, Japan</div>
+                <div class="title">"I Like Your Story!": A Co-Creative Story-Crafting Game with a Persona-Driven Character Based on Generative AI</div>
+                <div class="sub">Jiaying Fu, <strong class="me">Xiruo Wang</strong>, Kate Vi, Zhouyi Li, Chuyan Xu, Yuqian Sun · CHI EA '25 · Yokohama, Japan</div>
                 <div class="logo-row">
                   <span class="logo chi"><span class="dot" aria-hidden="true"></span>CHI 2025</span>
                 </div>
@@ -212,15 +424,14 @@
             </div>
           </div>
 
-          <!-- SIGGRAPH Asia '24 Art Papers -->
           <div class="item pub-card">
             <div class="pub-grid">
               <figure class="thumb">
-                <img src="figures/sig.jpg" alt="Exhibition view from SIGGRAPH Asia art paper" onerror="this.onerror=null; this.src='https://placehold.co/600x400/ede9fe/7c3aed?text=SIGGRAPH+Asia'">
+                <img src="figures/sig.jpg" alt="Exhibition view from SIGGRAPH Asia art paper" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f0e8d8/794f27?text=SIGGRAPH+Asia'">
               </figure>
               <div>
                 <div class="title">Constructing Immersive Narrative Environments with Physical Interaction: 17th-Century European Fascination with China</div>
-                <div class="sub"><strong class="me">Xiruo Wang</strong> · SIGGRAPH Asia ’24 Art Papers · Tokyo, Japan</div>
+                <div class="sub"><strong class="me">Xiruo Wang</strong> · SIGGRAPH Asia '24 Art Papers · Tokyo, Japan</div>
                 <div class="logo-row">
                   <span class="logo sig"><span class="dot" aria-hidden="true"></span>SIGGRAPH Asia 2024</span>
                 </div>
@@ -230,7 +441,7 @@
         </div>
       </section>
 
-      <section id="edu" class="hoverize">
+      <section id="edu">
         <h2>Education</h2>
         <div class="list">
           <div class="item">
@@ -248,7 +459,7 @@
         </div>
       </section>
 
-      <section id="work" class="hoverize">
+      <section id="work">
         <h2>Work</h2>
         <div class="list">
           <div class="item">
@@ -272,7 +483,7 @@
         </div>
       </section>
 
-      <section id="exp" class="hoverize">
+      <section id="exp">
         <h2>Research</h2>
         <div class="list">
           <div class="item">
@@ -281,7 +492,7 @@
             <ul class="sub">
               <li>Built an LLM-driven narrative system enabling AI characters to reshape states and environments.</li>
               <li>Designed dynamic object triggers and branching logic; ran 3 iterative workshops (N=18).</li>
-              <li>Outcome: paper accepted at CHI EA ’25; insights for adaptive narrative systems.</li>
+              <li>Outcome: paper accepted at CHI EA '25; insights for adaptive narrative systems.</li>
             </ul>
           </div>
           <div class="item">
@@ -290,7 +501,7 @@
             <ul class="sub">
               <li>Prototyped immersive VR narratives combining surrealism and orientalist aesthetics.</li>
               <li>Conducted user studies on multisensory engagement and cultural expression.</li>
-              <li>Outcome: SIGGRAPH Asia ’24 Art Paper; presented in Tokyo.</li>
+              <li>Outcome: SIGGRAPH Asia '24 Art Paper; presented in Tokyo.</li>
             </ul>
           </div>
           <div class="item">
@@ -327,7 +538,7 @@
           <li><time>Aug 2025</time> <span class="act">ChinaJoy 2025</span> · Shanghai, China · Shanghai New International Expo Centre</li>
           <li><time>May 2025</time> <span class="act">Gamescom Latam BIG Festival</span> · São Paulo, Brazil · São Paulo Expo</li>
           <li><time>Mar 2025</time> <span class="act">GDC</span> · San Francisco, United States · Moscone Center</li>
-          <li><time>Jan 2025</time> <span class="act">The 6th “Amid Mountains and Seas” Digital Art Gallery</span> · San Francisco, United States · SFCU Art Space</li>
+          <li><time>Jan 2025</time> <span class="act">The 6th "Amid Mountains and Seas" Digital Art Gallery</span> · San Francisco, United States · SFCU Art Space</li>
           <li><time>Nov 2024</time> <span class="act">NEXT Level Festival</span> · Dortmund, Germany · Dortmunder U</li>
           <li><time>Sep 2024</time> <span class="act">Ars Electronica 2024</span> · Linz, Austria · Ars Electronica Center</li>
           <li><time>May 2024</time> <span class="act">Gamescom 2024</span> · Cologne, Germany · Messe Köln</li>
@@ -343,7 +554,7 @@
         <h2>Contact</h2>
         <div class="item">
           <div class="title">📧 <a href="mailto:xiruo.wang.22@alumni.ucl.ac.uk">xiruo[dot]wang[dot]22[at]alumni[dot]ucl[dot]ac[dot]uk</a></div>
-           <div class="title" style="margin-top:8px">📧 <a href="mailto:xiruo.wang@163.com">xiruo[dot]wang[at]163[dot]com</a></div>
+          <div class="title" style="margin-top: 8px;">📧 <a href="mailto:xiruo.wang@163.com">xiruo[dot]wang[at]163[dot]com</a></div>
           <div class="sub" style="margin-top: 16px;">🐙 <a href="https://github.com/xiruoplay" target="_blank" rel="noreferrer">github.com/xiruoplay</a> · 💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
         </div>
       </section>
@@ -357,14 +568,11 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Reusable function for expand/collapse logic
     function setupToggleList(listId, btnId, limit = 5) {
       const list = document.getElementById(listId);
       let btn = document.getElementById(btnId);
-      
       if (!list) return;
       const items = Array.from(list.children);
-      
       if (!btn && items.length > limit) {
         btn = document.createElement('button');
         btn.id = btnId;
@@ -373,9 +581,7 @@
         btn.setAttribute('aria-expanded', 'false');
         list.parentElement.appendChild(btn);
       }
-      
       if (!btn) return;
-      
       let collapsed = true;
       function apply() {
         items.forEach((li, i) => {
@@ -384,18 +590,13 @@
         btn.textContent = collapsed ? 'Show more ▾' : 'Show less ▴';
         btn.setAttribute('aria-expanded', String(!collapsed));
       }
-      
       apply();
-      btn.addEventListener('click', () => {
-        collapsed = !collapsed;
-        apply();
-      });
+      btn.addEventListener('click', () => { collapsed = !collapsed; apply(); });
     }
 
     setupToggleList('news-list', 'news-toggle', 5);
     setupToggleList('exhibit-list', 'exhibit-toggle', 5);
 
-    // Congrats (lightweight) on hover for Honors & Awards and Scholarships
     (function(){
       const targets = document.querySelectorAll('.awards li, .scholar li');
       if(!targets.length) return;
@@ -425,7 +626,7 @@
         let last = 0;
         li.addEventListener('mouseenter', (e)=>{
           const now = performance.now();
-          if(now - last < 1200) return; // throttle
+          if(now - last < 1200) return;
           last = now;
           const rect = li.getBoundingClientRect();
           burst(li, e.clientX - rect.left, e.clientY - rect.top, 12);
