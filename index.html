@@ -132,7 +132,6 @@
 
     /* Layout */
     main { display: grid; grid-template-columns: 280px 1fr; gap: 60px; padding: 40px 0; }
-    @media(max-width: 900px) { main { grid-template-columns: 1fr; gap: 40px; } }
 
     /* Sidebar */
     .sidebar {
@@ -277,7 +276,7 @@
       border: 3px solid var(--animal-border-light);
     }
     .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-    @media(max-width: 700px) { .pub-grid { grid-template-columns: 1fr; } .thumb { padding-bottom: 56%; } }
+    @media(max-width: 700px) { .pub-grid { grid-template-columns: 1fr; gap: var(--animal-spacing-lg); } .thumb { padding-bottom: 56%; } }
 
     .logo-row { display: flex; gap: 10px; align-items: center; margin-top: var(--animal-spacing-md); flex-wrap: wrap; }
     .logo {
@@ -348,13 +347,122 @@
       0%, 100% { transform: rotate(-5deg); }
       50% { transform: rotate(10deg); }
     }
+
+    /* Hamburger button */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 40px; height: 40px;
+      background: var(--animal-bg);
+      border: 2px solid var(--animal-border-light);
+      border-radius: var(--animal-radius-sm);
+      box-shadow: 0 3px 0 0 #bdaea0;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 8px;
+      transition: all var(--animal-duration-base) var(--animal-ease);
+    }
+    .hamburger:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 0 #bdaea0;
+    }
+    .hamburger span {
+      display: block;
+      width: 100%; height: 2.5px;
+      background: var(--animal-text-brown);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+    /* ── Tablet: <= 1024px ── */
+    @media (max-width: 1024px) {
+      main { grid-template-columns: 1fr; gap: 32px; }
+      .sidebar {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
+        text-align: center;
+      }
+      .sidebar .avatar { margin: 0 auto; }
+      .sidebar .name { text-align: center; }
+      .sidebar .name img { margin: 0 auto; }
+      .sidebar .title-role { text-align: center; }
+      .sidebar .meta { justify-items: center; }
+      .sidebar .news h2 { display: inline-block; }
+    }
+
+    /* ── Mobile: <= 600px ── */
+    @media (max-width: 600px) {
+      .wrap { padding: 0 var(--animal-spacing-lg); }
+
+      .hamburger { display: flex; }
+      .nav { flex-wrap: wrap; gap: var(--animal-spacing-md); overflow-x: visible; white-space: normal; }
+      #nav-menu {
+        display: none;
+        width: 100%;
+        order: 3;
+      }
+      #nav-menu.open { display: block; }
+      .nav ul {
+        flex-direction: column;
+        gap: var(--animal-spacing-xs);
+        padding: var(--animal-spacing-md) 0;
+        white-space: normal;
+      }
+      .nav a {
+        display: block;
+        padding: 10px var(--animal-spacing-lg);
+        border-radius: var(--animal-radius-base);
+        font-size: var(--animal-font-size-base);
+        text-align: center;
+      }
+      .nav a:hover { transform: none; }
+      .nav .brand { font-size: 16px; padding: 6px 16px; }
+
+      main { padding: 24px 0; gap: 24px; }
+      section { padding: 24px 0; }
+
+      h2 {
+        font-size: 20px;
+        padding: var(--animal-spacing-sm) var(--animal-spacing-lg);
+        display: block;
+      }
+      .name { font-size: 22px; }
+
+      .avatar { max-width: 120px; }
+
+      .item { padding: var(--animal-spacing-lg); border-radius: 16px; }
+      .news li { padding: var(--animal-spacing-md) var(--animal-spacing-lg); border-radius: 16px; }
+      .awards li, .scholar li { padding: var(--animal-spacing-md) var(--animal-spacing-lg); border-radius: 16px; }
+
+      .pub-grid { grid-template-columns: 1fr; }
+      .thumb { padding-bottom: 56%; }
+
+      .list { gap: var(--animal-spacing-md); }
+      .news ul { gap: var(--animal-spacing-sm); }
+      .awards ul, .scholar ul { gap: var(--animal-spacing-sm); }
+
+      footer { padding: 24px 0 32px; }
+
+      body::before { display: none; }
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap nav">
       <div class="brand">🏝️ xiruoplay</div>
-      <nav>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-menu">
         <ul class="toc">
           <li><a href="#aboutme">About</a></li>
           <li><a href="#pubs">Publications</a></li>
@@ -614,6 +722,22 @@
 
     setupToggleList('news-list', 'news-toggle', 5);
     setupToggleList('exhibit-list', 'exhibit-toggle', 5);
+
+    // Hamburger menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+    hamburger.addEventListener('click', () => {
+      const isOpen = hamburger.classList.toggle('open');
+      navMenu.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+    });
+    navMenu.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') {
+        hamburger.classList.remove('open');
+        navMenu.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
 
     // Nav active state: click + scroll-spy
     const navLinks = document.querySelectorAll('.nav a[href^="#"]');
