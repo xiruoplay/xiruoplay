@@ -686,29 +686,38 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObs.unobserve(entry.target); }
       });
-    }, { threshold: 0.08 });
+    }, { threshold: 0 });
     revealEls.forEach(el => revealObs.observe(el));
+    // fallback: ensure all reveal elements become visible after 800ms regardless of observer
+    setTimeout(() => { document.querySelectorAll('.reveal:not(.visible)').forEach(el => el.classList.add('visible')); }, 800);
 
     // ── Floating avatar (scroll-triggered) ──
-    const floatingAvatar = document.getElementById('floating-avatar');
-    const profileCard = document.getElementById('profile-card');
-    const avatarObs = new IntersectionObserver(entries => {
-      const visible = entries[0].isIntersecting;
-      floatingAvatar.classList.toggle('visible', !visible);
-    }, { threshold: 0.1 });
-    if (profileCard) avatarObs.observe(profileCard);
-    floatingAvatar.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-    floatingAvatar.addEventListener('keydown', e => { if (e.key === 'Enter') window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    try {
+      const floatingAvatar = document.getElementById('floating-avatar');
+      const profileCard = document.getElementById('profile-card');
+      if (floatingAvatar && profileCard) {
+        const avatarObs = new IntersectionObserver(entries => {
+          const visible = entries[0].isIntersecting;
+          floatingAvatar.classList.toggle('visible', !visible);
+        }, { threshold: 0.1 });
+        avatarObs.observe(profileCard);
+        floatingAvatar.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        floatingAvatar.addEventListener('keydown', e => { if (e.key === 'Enter') window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      }
+    } catch(e) { console.warn('floatingAvatar error', e); }
 
     // ── Timeline expand/collapse ──
-    document.querySelectorAll('.tl-item').forEach(item => {
-      const btn = item.querySelector('.tl-toggle');
-      btn.addEventListener('click', () => { item.classList.toggle('open'); });
-      item.querySelector('.tl-header').addEventListener('click', () => { item.classList.toggle('open'); });
-    });
+    try {
+      document.querySelectorAll('.tl-item').forEach(item => {
+        const btn = item.querySelector('.tl-toggle');
+        if (btn) btn.addEventListener('click', () => { item.classList.toggle('open'); });
+        const hdr = item.querySelector('.tl-header');
+        if (hdr) hdr.addEventListener('click', () => { item.classList.toggle('open'); });
+      });
+    } catch(e) { console.warn('timeline error', e); }
 
     // ── Collected badge on awards/scholarships ──
-    (function() {
+    try { (function() {
       const collected = new WeakSet();
       document.querySelectorAll('.awards li, .scholar li').forEach(li => {
         li.style.position = 'relative';
@@ -754,10 +763,10 @@
           }
         });
       });
-    })();
+    })(); } catch(e) { console.warn('collected badge error', e); }
 
     // ── Draggable .logo tags ──
-    (function() {
+    try { (function() {
       function makeDraggable(el) {
         let startX=0,startY=0,dx=0,dy=0,returnTimer=null;
         el.addEventListener('mousedown', onDown);
@@ -795,10 +804,10 @@
         }
       }
       document.querySelectorAll('.logo').forEach(makeDraggable);
-    })();
+    })(); } catch(e) { console.warn('draggable error', e); }
 
     // ── Typewriter effect ──
-    (function() {
+    try { (function() {
       const el = document.getElementById('hero-tagline');
       if (!el) return;
       const text = 'AI Technical Artist crafting\ngames, narratives & interactive worlds';
@@ -817,11 +826,12 @@
           setTimeout(() => cursor.remove(), 2000);
         }
       }, 38);
-    })();
+    })(); } catch(e) { console.warn('typewriter error', e); }
 
     // ── Cursor particle trail ──
-    (function() {
+    try { (function() {
       const canvas = document.getElementById('cursor-canvas');
+      if (!canvas) return;
       const ctx = canvas.getContext('2d');
       let W = canvas.width = window.innerWidth;
       let H = canvas.height = window.innerHeight;
@@ -865,7 +875,7 @@
         requestAnimationFrame(loop);
       }
       loop();
-    })();
+    })(); } catch(e) { console.warn('cursor particle error', e); }
 
     // ── Featured portfolio ──
     fetch('portfolio.json')

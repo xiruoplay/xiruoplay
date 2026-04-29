@@ -17,7 +17,10 @@ function setupToggleList(listId, btnId, limit) {
   let collapsed = true;
   function apply() {
     items.forEach((li, i) => {
-      li.style.display = (collapsed && i >= limit) ? 'none' : '';
+      const hide = collapsed && i >= limit;
+      li.style.display = hide ? 'none' : '';
+      // ensure reveal animation fires when item becomes visible
+      if (!hide) li.classList.add('visible');
     });
     btn.textContent = collapsed ? 'Show more ▾' : 'Show less ▴';
     btn.setAttribute('aria-expanded', String(!collapsed));
