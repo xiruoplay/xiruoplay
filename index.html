@@ -17,123 +17,296 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&family=M+PLUS+Rounded+1c:wght@500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Index-specific: layout */
-    main { display: grid; grid-template-columns: 280px 1fr; gap: 60px; padding: 40px 0; }
-    .sidebar {
-      position: sticky; top: 80px; align-self: start;
-      max-height: calc(100vh - 100px); overflow-y: auto;
-      padding-right: var(--animal-spacing-lg);
-      scrollbar-width: thin; scrollbar-color: var(--animal-border-light) transparent;
-    }
-    .sidebar::-webkit-scrollbar { width: 4px; }
-    .sidebar::-webkit-scrollbar-track { background: transparent; }
-    .sidebar::-webkit-scrollbar-thumb { background-color: transparent; border-radius: 4px; }
-    .sidebar:hover::-webkit-scrollbar-thumb { background-color: var(--animal-border-light); }
+    /* ── Layout: single column, sidebar becomes floating avatar on scroll ── */
+    main { display: block; padding: 40px 0; }
 
-    /* Avatar swap on hover */
-    .avatar-wrap {
+    /* Profile card (full, shown at top) */
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 32px 40px;
+      background: var(--animal-bg-card);
+      border-radius: 28px;
+      box-shadow: var(--animal-shadow-card);
+      margin-bottom: 40px;
+      transition: all 0.4s var(--animal-ease);
+    }
+    .profile-card .avatar-wrap {
       position: relative;
-      width: 66%; max-width: 180px;
-      aspect-ratio: 1/1;
+      width: 120px; height: 120px;
       border-radius: 50%;
       box-shadow: 0 4px 0 0 #bdaea0;
-      transition: transform var(--animal-duration-base) var(--animal-ease),
-                  box-shadow var(--animal-duration-base) var(--animal-ease);
-      /* Ensure height is computed from aspect-ratio */
       overflow: hidden;
+      flex-shrink: 0;
+      transition: all 0.4s var(--animal-ease);
     }
-    .avatar-wrap:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 7px 0 0 #bdaea0;
-    }
-    .avatar {
+    .profile-card .avatar {
       border-radius: 50%;
       border: 4px solid var(--animal-border-light);
-      background: var(--animal-bg-card);
       width: 100%; height: 100%;
       object-fit: cover;
       position: absolute; inset: 0;
       transition: opacity 0.35s ease;
       display: block;
     }
-    .avatar-default { opacity: 1; }
-    .avatar-hover { opacity: 0; }
-    .avatar-wrap:hover .avatar-default { opacity: 0; }
-    .avatar-wrap:hover .avatar-hover { opacity: 1; }
+    .profile-card .avatar-default { opacity: 1; }
+    .profile-card .avatar-hover   { opacity: 0; }
+    .profile-card .avatar-wrap:hover .avatar-default { opacity: 0; }
+    .profile-card .avatar-wrap:hover .avatar-hover   { opacity: 1; }
+    .profile-card .avatar-wrap:hover { transform: translateY(-3px); box-shadow: 0 7px 0 0 #bdaea0; }
 
-    .name { font-size: 28px; font-weight: 900; margin: var(--animal-spacing-lg) 0 6px; color: var(--animal-text); }
-    .title-role { color: var(--animal-text-body); margin: 0 0 var(--animal-spacing-lg); font-size: 15px; font-weight: 600; }
-    .meta { display: grid; gap: var(--animal-spacing-md); margin: var(--animal-spacing-lg) 0; font-size: var(--animal-font-size-base); }
+    .profile-info { flex: 1; min-width: 0; }
+    .profile-info .name { font-size: 26px; font-weight: 900; color: var(--animal-text); margin-bottom: 4px; }
+    .profile-info .title-role { color: var(--animal-text-body); font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+    .profile-info .meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; }
 
-    /* CV dropdown */
+    /* Floating mini avatar (appears after scrolling) */
+    .floating-avatar {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--animal-border-light);
+      box-shadow: 0 4px 0 0 #bdaea0;
+      cursor: pointer;
+      z-index: 50;
+      opacity: 0;
+      transform: scale(0.6) translateY(20px);
+      transition: opacity 0.4s var(--animal-ease), transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      background: var(--animal-bg-card);
+    }
+    .floating-avatar.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    .floating-avatar:hover { transform: scale(1.1) translateY(-2px); box-shadow: 0 6px 0 0 #bdaea0; }
+    .floating-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* Tooltip on floating avatar */
+    .floating-avatar::after {
+      content: "Back to top ↑";
+      position: absolute;
+      bottom: calc(100% + 10px);
+      right: 0;
+      white-space: nowrap;
+      background: var(--animal-bg-card);
+      border: 2px solid var(--animal-border-light);
+      border-radius: var(--animal-radius-pill);
+      padding: 4px 12px;
+      font-family: var(--animal-font-family);
+      font-size: 11px; font-weight: 700;
+      color: var(--animal-text-brown);
+      box-shadow: 0 2px 0 0 #bdaea0;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+    .floating-avatar:hover::after { opacity: 1; }
+
+    /* ── News strip (horizontal scroll) ── */
+    .news-strip {
+      overflow-x: auto;
+      scrollbar-width: none;
+      display: flex;
+      gap: 12px;
+      padding: 4px 2px 8px;
+      margin-bottom: 8px;
+    }
+    .news-strip::-webkit-scrollbar { display: none; }
+    .news-chip {
+      flex-shrink: 0;
+      max-width: 260px;
+      padding: 10px 16px;
+      background: var(--animal-bg-card);
+      border-radius: 18px;
+      box-shadow: var(--animal-shadow-sm);
+      font-size: 12px; font-weight: 500;
+      color: var(--animal-text-body);
+      transition: all 0.25s ease;
+    }
+    .news-chip:hover { transform: translateY(-3px); box-shadow: 0 6px 14px rgba(114,93,66,0.12); }
+    .news-chip time { color: var(--animal-primary-active); font-weight: 700; display: block; font-size: 11px; margin-bottom: 3px; }
+
+    /* ── CV dropdown ── */
     .nav-dropdown { position: relative; }
     .nav-drop-btn {
       padding: 6px 14px;
       font-family: var(--animal-font-family);
-      font-weight: 700;
-      font-size: var(--animal-font-size-base);
+      font-weight: 700; font-size: var(--animal-font-size-base);
       color: var(--animal-text-brown);
-      background: transparent;
-      border: none;
+      background: transparent; border: none;
       border-radius: var(--animal-radius-pill);
-      cursor: pointer;
-      white-space: nowrap;
+      cursor: pointer; white-space: nowrap;
       transition: all var(--animal-duration-base) var(--animal-ease);
     }
     .nav-drop-btn:hover, .nav-dropdown.open .nav-drop-btn {
-      background: var(--animal-primary-bg);
-      color: var(--animal-primary-active);
+      background: var(--animal-primary-bg); color: var(--animal-primary-active);
     }
     .nav-submenu {
-      display: none;
-      position: fixed;
+      display: none; position: fixed;
       background: var(--animal-bg-card);
       border: 2.5px solid var(--animal-border-light);
       border-radius: var(--animal-radius-lg);
       box-shadow: 0 6px 0 0 #bdaea0, var(--animal-shadow-lg);
-      padding: 8px;
-      list-style: none;
-      min-width: 150px;
-      z-index: 200;
-      animation: animal-zoom-in 0.2s ease;
+      padding: 8px; list-style: none; min-width: 150px;
+      z-index: 200; animation: animal-zoom-in 0.2s ease;
     }
     .nav-dropdown.open .nav-submenu { display: block; }
     .nav-submenu li a {
-      display: block;
-      padding: 8px 16px;
+      display: block; padding: 8px 16px;
       border-radius: var(--animal-radius-base);
-      font-weight: 700;
-      font-size: var(--animal-font-size-base);
-      color: var(--animal-text-brown);
-      white-space: nowrap;
+      font-weight: 700; font-size: var(--animal-font-size-base);
+      color: var(--animal-text-brown); white-space: nowrap;
       transition: all var(--animal-duration-base) var(--animal-ease);
     }
-    .nav-submenu li a:hover {
-      background: var(--animal-primary-bg);
-      color: var(--animal-primary-active);
-    }
-    /* Mobile: submenu becomes inline, override fixed positioning */
+    .nav-submenu li a:hover { background: var(--animal-primary-bg); color: var(--animal-primary-active); }
     @media (max-width: 600px) {
-      .nav-submenu {
-        position: static !important;
-        top: auto !important; left: auto !important;
-        box-shadow: none;
-        border: none;
-        padding: 0 0 0 16px;
-        animation: none;
-        background: transparent;
-      }
-      .nav-dropdown.open .nav-submenu { display: block; }
+      .nav-submenu { position: static !important; top: auto !important; left: auto !important; box-shadow: none; border: none; padding: 0 0 0 16px; animation: none; background: transparent; }
       .nav-drop-btn { width: 100%; text-align: center; }
     }
 
-    /* Draggable .logo tags (conference badges) */
+    /* ── Draggable .logo tags ── */
     .logo { cursor: grab; user-select: none; }
     .logo.dragging { cursor: grabbing; opacity: 0.75; z-index: 20; }
-    .logo.returning { transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) !important; }
+    .logo.returning { transition: transform 0.55s cubic-bezier(0.34,1.56,0.64,1) !important; }
+
+    /* ── Scroll-triggered entrance animation ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px) scale(0.97);
+      transition: opacity 0.55s var(--animal-ease), transform 0.55s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* ── Timeline (Work + Education) ── */
+    .timeline { position: relative; padding-left: 36px; }
+    .timeline::before {
+      content: '';
+      position: absolute; left: 10px; top: 8px; bottom: 8px; width: 3px;
+      background: linear-gradient(to bottom, var(--animal-primary), var(--animal-border-light));
+      border-radius: 2px;
+    }
+    .tl-item {
+      position: relative; margin-bottom: 20px;
+      background: var(--animal-bg-card);
+      border-radius: 20px;
+      box-shadow: var(--animal-shadow-sm);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .tl-item:hover { transform: translateY(-3px); box-shadow: var(--animal-shadow-card); }
+    .tl-item::before {
+      content: '';
+      position: absolute; left: -30px; top: 22px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--animal-primary);
+      border: 3px solid var(--animal-bg);
+      box-shadow: 0 0 0 2px var(--animal-primary);
+      transition: all 0.25s ease;
+    }
+    .tl-item.open::before { background: var(--animal-warning); box-shadow: 0 0 0 2px var(--animal-warning); }
+    .tl-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; gap: 12px;
+    }
+    .tl-header-left { flex: 1; min-width: 0; }
+    .tl-title { font-weight: 700; color: var(--animal-text); font-size: 15px; }
+    .tl-sub { color: var(--animal-text-body); font-size: 13px; margin-top: 3px; font-weight: 500; }
+    .tl-toggle {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid var(--animal-border-light);
+      background: var(--animal-bg);
+      box-shadow: 0 2px 0 0 #bdaea0;
+      font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--animal-text-brown); font-weight: 900;
+      transition: all 0.3s ease; flex-shrink: 0;
+    }
+    .tl-item.open .tl-toggle { transform: rotate(45deg); background: var(--animal-primary); color: #fff; border-color: var(--animal-primary-active); box-shadow: 0 2px 0 0 var(--animal-primary-active); }
+    .tl-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.4s ease;
+      padding: 0 20px;
+    }
+    .tl-item.open .tl-body { max-height: 300px; padding: 0 20px 16px; }
+    .tl-body ul { margin: 0; padding-left: 18px; }
+    .tl-body ul li { margin-bottom: 6px; font-size: 13px; color: var(--animal-text-body); font-weight: 500; }
+
+    /* ── Collected badge ── */
+    .collected-badge {
+      position: absolute; top: -10px; right: -10px;
+      background: var(--animal-success);
+      color: #fff;
+      font-family: var(--animal-font-family);
+      font-size: 11px; font-weight: 900;
+      padding: 4px 10px;
+      border-radius: var(--animal-radius-pill);
+      border: 2px solid #fff;
+      box-shadow: 0 2px 0 0 var(--animal-success-active);
+      pointer-events: none;
+      z-index: 10;
+      animation: badge-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      white-space: nowrap;
+    }
+    @keyframes badge-pop {
+      0% { opacity: 0; transform: scale(0.3) rotate(-15deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    /* ── Cursor particles canvas ── */
+    #cursor-canvas {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── Hero typewriter ── */
+    .hero-tagline .cursor-blink {
+      display: inline-block;
+      width: 3px; height: 1.1em;
+      background: var(--animal-primary);
+      margin-left: 2px;
+      vertical-align: middle;
+      border-radius: 2px;
+      animation: blink-cursor 0.7s step-end infinite;
+    }
+    @keyframes blink-cursor { 50% { opacity: 0; } }
+
+    /* ── Responsive adjustments ── */
+    @media (max-width: 1024px) {
+      .profile-card { flex-direction: column; text-align: center; padding: 24px; }
+      .profile-info .meta { justify-content: center; }
+    }
+    @media (max-width: 600px) {
+      .wrap { padding: 0 var(--animal-spacing-lg); }
+      .hamburger { display: flex; }
+      .nav { flex-wrap: wrap; gap: var(--animal-spacing-md); overflow-x: visible; white-space: normal; }
+      #nav-menu { display: none; width: 100%; order: 3; }
+      #nav-menu.open { display: block; }
+      .nav ul { flex-direction: column; gap: var(--animal-spacing-xs); padding: var(--animal-spacing-md) 0; white-space: normal; }
+      .nav a { display: block; padding: 10px var(--animal-spacing-lg); border-radius: var(--animal-radius-base); text-align: center; }
+      .nav a:hover { transform: none; }
+      .nav .brand { font-size: 16px; padding: 6px 16px; }
+      main { padding: 24px 0; }
+      section { padding: 24px 0; }
+      h2 { font-size: 20px; padding: var(--animal-spacing-sm) var(--animal-spacing-lg); display: block; }
+      .profile-card .avatar-wrap { width: 90px; height: 90px; }
+      .profile-info .name { font-size: 20px; }
+      footer { padding: 24px 0 32px; }
+      body::before { display: none; }
+    }
   </style>
 </head>
 <body>
+  <!-- Cursor particle canvas -->
+  <canvas id="cursor-canvas"></canvas>
+
   <header>
     <div class="wrap nav">
       <div class="brand"><a href="index.html">🏝️ xiruoplay</a></div>
@@ -164,7 +337,7 @@
 
   <!-- Hero -->
   <div class="wrap hero">
-    <div class="hero-tagline">AI Technical Artist crafting<br>games, narratives & interactive worlds</div>
+    <div class="hero-tagline" id="hero-tagline"></div>
     <div class="hero-sub">SIGGRAPH Asia · CHI · Ars Electronica · A MAZE./Berlin</div>
     <div class="hero-actions">
       <a href="portfolio.html" class="animal-btn animal-btn-primary">View Portfolio</a>
@@ -173,225 +346,279 @@
   </div>
 
   <main class="wrap">
-    <aside class="sidebar" id="about">
+    <!-- Profile card (full version, visible at top) -->
+    <div class="profile-card reveal" id="profile-card">
       <div class="avatar-wrap">
-        <img class="avatar avatar-default" src="figures/image2.png" alt="avatar of Xiruo Wang" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Xiruo+Wang&size=400&background=19c8b9&color=fff';"/>
-        <img class="avatar avatar-hover" src="figures/image1.jpg" alt="avatar of Xiruo Wang" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Xiruo+Wang&size=400&background=19c8b9&color=fff';"/>
+        <img class="avatar avatar-default" src="figures/image2.png" alt="avatar" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Xiruo+Wang&size=400&background=19c8b9&color=fff';">
+        <img class="avatar avatar-hover"   src="figures/image1.jpg" alt="avatar" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Xiruo+Wang&size=400&background=19c8b9&color=fff';">
       </div>
-      <div class="name"><img src="figures/name.png" alt="Xiruo Wang" onerror="this.outerHTML='<span>Xiruo Wang</span>'" style="max-height: 40px;"></div>
-      <div class="title-role">AI Technical Artist · Games & HCI</div>
-      <div class="meta">
-        <div>📍 Hangzhou / Shanghai</div>
-        <div>📧 <a href="mailto:xiruo.wang@163.com">xiruo[dot]wang[at]163[dot]com</a></div>
-        <div>💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
+      <div class="profile-info">
+        <div class="name"><img src="figures/name.png" alt="Xiruo Wang" onerror="this.outerHTML='<span>Xiruo Wang</span>'" style="max-height:36px; display:inline-block;"></div>
+        <div class="title-role">AI Technical Artist · Games & HCI</div>
+        <div class="meta">
+          <span>📍 Hangzhou / Shanghai</span>
+          <span>📧 <a href="mailto:xiruo.wang@163.com">xiruo[dot]wang[at]163[dot]com</a></span>
+          <span>💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></span>
+        </div>
       </div>
+    </div>
 
-      <section id="news" class="news">
-        <h2>News</h2>
-        <ul id="news-list">
-          <li><time>Apr 2026</time> Paper accepted at <span class="act">ACM CHI EA 2026</span> — "One Kiss: Emojis as Agents of Genre Flux"</li>
-          <li><time>Nov 2025</time> Tencent Game Award 2025 Nomination &amp; Invited Talk <span class="act">Tencent Game Award 2025</span></li>
-          <li><time>Aug 2025</time> 1001 Nights exhibited at <span class="act">ChinaJoy 2025</span>, Shanghai</li>
-          <li><time>Apr 2025</time> Presented at <span class="act">ACM CHI 2025</span> (Interactivity), Yokohama, Japan</li>
-          <li><time>Feb 2025</time> Paper accepted at <span class="act">ACM CHI EA 2025</span> — "I Like Your Story!"</li>
-          <li><time>Dec 2024</time> Art Paper presented at <span class="act">SIGGRAPH Asia 2024</span>, Tokyo, Japan</li>
-          <li><time>Jan 2024</time> Graduated with a Merit Master's degree in Architecture from University College London 🎓</li>
-          <li><time>Oct 2024</time> AI-native game "1001 Nights" demo launched on <span class="act">Steam</span></li>
-          <li><time>Sep 2024</time> Invited talk at <span class="act">Ars Electronica 2024</span> — Expanded Animation Conference, Linz, Austria</li>
-          <li><time>2023–2024</time> Works selected for <span class="act">A MAZE./Berlin, Now Play This, EGX, Gamescom</span></li>
-        </ul>
-        <button id="news-toggle" class="btn-lite" aria-expanded="false">Show more ▾</button>
-      </section>
-    </aside>
+    <!-- News horizontal strip -->
+    <section id="news">
+      <h2>News</h2>
+      <div class="news-strip">
+        <div class="news-chip"><time>Apr 2026</time> Paper accepted at ACM CHI EA 2026 — "One Kiss: Emojis as Agents of Genre Flux"</div>
+        <div class="news-chip"><time>Nov 2025</time> Tencent Game Award 2025 Nomination &amp; Invited Talk</div>
+        <div class="news-chip"><time>Aug 2025</time> 1001 Nights exhibited at ChinaJoy 2025, Shanghai</div>
+        <div class="news-chip"><time>Apr 2025</time> Presented at ACM CHI 2025 (Interactivity), Yokohama, Japan</div>
+        <div class="news-chip"><time>Feb 2025</time> Paper accepted at ACM CHI EA 2025 — "I Like Your Story!"</div>
+        <div class="news-chip"><time>Dec 2024</time> Art Paper presented at SIGGRAPH Asia 2024, Tokyo</div>
+        <div class="news-chip"><time>Oct 2024</time> AI-native game "1001 Nights" demo launched on Steam</div>
+        <div class="news-chip"><time>Sep 2024</time> Invited talk at Ars Electronica 2024, Linz, Austria</div>
+        <div class="news-chip"><time>2023–2024</time> Works selected for A MAZE./Berlin, Now Play This, EGX, Gamescom</div>
+      </div>
+    </section>
 
-    <div>
-      <section id="aboutme">
-        <h2>About Me</h2>
-        <p>I focus on AI-driven games and interactive systems, immersive narratives, and generative art for level design and emotional regulation. My works and papers have appeared at SIGGRAPH Asia, CHI, Ars Electronica, A&nbsp;MAZE./Berlin, and the London Game Festival.</p>
-        <p><strong>Keywords</strong>: AI games · HCI · VR narrative · co-creation · generative art · level design · affective computing. Portfolio: <a href="https://www.xiruowang.com" target="_blank" rel="noreferrer">www[dot]xiruowang[dot]com</a></p>
-      </section>
+    <section id="aboutme">
+      <h2>About Me</h2>
+      <p class="reveal">I focus on AI-driven games and interactive systems, immersive narratives, and generative art for level design and emotional regulation. My works and papers have appeared at SIGGRAPH Asia, CHI, Ars Electronica, A&nbsp;MAZE./Berlin, and the London Game Festival.</p>
+      <p class="reveal"><strong>Keywords</strong>: AI games · HCI · VR narrative · co-creation · generative art · level design · affective computing. Portfolio: <a href="https://www.xiruowang.com" target="_blank" rel="noreferrer">www[dot]xiruowang[dot]com</a></p>
+    </section>
 
-      <!-- Featured Portfolio -->
-      <section id="featured-portfolio">
-        <h2>Featured Projects</h2>
-        <div class="featured-grid" id="featured-grid"></div>
-        <div style="text-align: center; margin-top: var(--animal-spacing-xl);">
-          <a href="portfolio.html" class="animal-btn">View All Projects</a>
-        </div>
-      </section>
+    <!-- Featured Portfolio -->
+    <section id="featured-portfolio">
+      <h2>Featured Projects</h2>
+      <div class="featured-grid reveal" id="featured-grid"></div>
+      <div style="text-align:center; margin-top: var(--animal-spacing-xl);">
+        <a href="portfolio.html" class="animal-btn">View All Projects</a>
+      </div>
+    </section>
 
-      <section id="pubs">
-        <h2>Publications</h2>
-        <div class="list">
-          <div class="item pub-card">
-            <div class="pub-grid">
-              <figure class="thumb">
-                <img src="figures/figure1.png" alt="Preview of One Kiss" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f0e8d8/794f27?text=CHI+EA+2026'">
-              </figure>
-              <div>
-                <div class="title">One Kiss: Emojis as Agents of Genre Flux in Generative Comics</div>
-                <div class="sub"><strong class="me">Xiruo Wang</strong>, Xinyi Jiang, Ziqi Lyu · CHI EA '26 · Barcelona, Spain</div>
-                <div class="logo-row">
-                  <span class="logo chi"><span class="dot" aria-hidden="true"></span>CHI 2026</span>
-                  <a href="https://doi.org/10.1145/3772363.3798758" target="_blank" class="logo" style="color: var(--animal-text);">
-                    <span class="dot" style="background: #889df0;" aria-hidden="true"></span>DOI
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="item pub-card">
-            <div class="pub-grid">
-              <figure class="thumb">
-                <img src="figures/chi.jfif" alt="Screenshot from I Like Your Story" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f0e8d8/794f27?text=CHI+2025'">
-              </figure>
-              <div>
-                <div class="title">"I Like Your Story!": A Co-Creative Story-Crafting Game with a Persona-Driven Character Based on Generative AI</div>
-                <div class="sub">Jiaying Fu, <strong class="me">Xiruo Wang</strong>, Kate Vi, Zhouyi Li, Chuyan Xu, Yuqian Sun · CHI EA '25 · Yokohama, Japan</div>
-                <div class="logo-row">
-                  <span class="logo chi"><span class="dot" aria-hidden="true"></span>CHI 2025</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="item pub-card">
-            <div class="pub-grid">
-              <figure class="thumb">
-                <img src="figures/sig.jpg" alt="Exhibition view from SIGGRAPH Asia art paper" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f0e8d8/794f27?text=SIGGRAPH+Asia'">
-              </figure>
-              <div>
-                <div class="title">Constructing Immersive Narrative Environments with Physical Interaction: 17th-Century European Fascination with China</div>
-                <div class="sub"><strong class="me">Xiruo Wang</strong> · SIGGRAPH Asia '24 Art Papers · Tokyo, Japan</div>
-                <div class="logo-row">
-                  <span class="logo sig"><span class="dot" aria-hidden="true"></span>SIGGRAPH Asia 2024</span>
-                </div>
+    <section id="pubs">
+      <h2>Publications</h2>
+      <div class="list">
+        <div class="item pub-card reveal">
+          <div class="pub-grid">
+            <figure class="thumb">
+              <img src="figures/figure1.png" alt="Preview of One Kiss" onerror="this.onerror=null;this.src='https://placehold.co/600x400/f0e8d8/794f27?text=CHI+EA+2026'">
+            </figure>
+            <div>
+              <div class="title">One Kiss: Emojis as Agents of Genre Flux in Generative Comics</div>
+              <div class="sub"><strong class="me">Xiruo Wang</strong>, Xinyi Jiang, Ziqi Lyu · CHI EA '26 · Barcelona, Spain</div>
+              <div class="logo-row">
+                <span class="logo chi"><span class="dot" aria-hidden="true"></span>CHI 2026</span>
+                <a href="https://doi.org/10.1145/3772363.3798758" target="_blank" class="logo" style="color:var(--animal-text);">
+                  <span class="dot" style="background:#889df0;" aria-hidden="true"></span>DOI
+                </a>
               </div>
             </div>
           </div>
         </div>
-      </section>
 
-      <section id="edu">
-        <h2>Education</h2>
-        <div class="list">
-          <div class="item-light">
-            <div class="title">UCL — MArch Design for Performance & Interaction</div>
-            <div class="sub">Sep 2022 – Jan 2024 · Merit (High 2:1) · GPA 3.64</div>
-          </div>
-          <div class="item-light">
-            <div class="title">Shanghai University — BFA Digital Media Art</div>
-            <div class="sub">Sep 2017 – Jun 2021 · GPA 3.67 (88.65/100) · Shanghai Municipal Outstanding Graduate; Shanghai Government Scholarship</div>
-          </div>
-          <div class="item-light">
-            <div class="title">East China Normal University — BSc Applied Psychology (Minor)</div>
-            <div class="sub">Sep 2018 – Jun 2021</div>
+        <div class="item pub-card reveal">
+          <div class="pub-grid">
+            <figure class="thumb">
+              <img src="figures/chi.jfif" alt="I Like Your Story" onerror="this.onerror=null;this.src='https://placehold.co/600x400/f0e8d8/794f27?text=CHI+2025'">
+            </figure>
+            <div>
+              <div class="title">"I Like Your Story!": A Co-Creative Story-Crafting Game with a Persona-Driven Character Based on Generative AI</div>
+              <div class="sub">Jiaying Fu, <strong class="me">Xiruo Wang</strong>, Kate Vi, Zhouyi Li, Chuyan Xu, Yuqian Sun · CHI EA '25 · Yokohama, Japan</div>
+              <div class="logo-row">
+                <span class="logo chi"><span class="dot" aria-hidden="true"></span>CHI 2025</span>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
 
-      <section id="work">
-        <h2>Work</h2>
-        <div class="list">
-          <div class="item">
-            <div class="title">Ada Eden — AI Technical Artist / Researcher</div>
-            <div class="sub">Sep 2025 – Present · Shanghai / Remote</div>
-            <ul class="sub">
+        <div class="item pub-card reveal">
+          <div class="pub-grid">
+            <figure class="thumb">
+              <img src="figures/sig.jpg" alt="SIGGRAPH Asia" onerror="this.onerror=null;this.src='https://placehold.co/600x400/f0e8d8/794f27?text=SIGGRAPH+Asia'">
+            </figure>
+            <div>
+              <div class="title">Constructing Immersive Narrative Environments with Physical Interaction: 17th-Century European Fascination with China</div>
+              <div class="sub"><strong class="me">Xiruo Wang</strong> · SIGGRAPH Asia '24 Art Papers · Tokyo, Japan</div>
+              <div class="logo-row">
+                <span class="logo sig"><span class="dot" aria-hidden="true"></span>SIGGRAPH Asia 2024</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Education timeline -->
+    <section id="edu">
+      <h2>Education</h2>
+      <div class="timeline reveal">
+        <div class="tl-item">
+          <div class="tl-header">
+            <div class="tl-header-left">
+              <div class="tl-title">UCL — MArch Design for Performance & Interaction</div>
+              <div class="tl-sub">Sep 2022 – Jan 2024 · Merit (High 2:1) · GPA 3.64</div>
+            </div>
+            <button class="tl-toggle" aria-label="Expand">+</button>
+          </div>
+          <div class="tl-body">
+            <ul>
+              <li>Graduated with Merit (High 2:1), GPA 3.64</li>
+              <li>Focus on spatial performance, interactive architecture, and digital fabrication</li>
+              <li>Thesis explored AI-assisted narrative environment design</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-header">
+            <div class="tl-header-left">
+              <div class="tl-title">Shanghai University — BFA Digital Media Art</div>
+              <div class="tl-sub">Sep 2017 – Jun 2021 · GPA 3.67 (88.65/100)</div>
+            </div>
+            <button class="tl-toggle" aria-label="Expand">+</button>
+          </div>
+          <div class="tl-body">
+            <ul>
+              <li>Shanghai Municipal Outstanding Graduate; Shanghai Government Scholarship</li>
+              <li>Specialized in interactive media, game design, and generative art</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-header">
+            <div class="tl-header-left">
+              <div class="tl-title">East China Normal University — BSc Applied Psychology (Minor)</div>
+              <div class="tl-sub">Sep 2018 – Jun 2021</div>
+            </div>
+            <button class="tl-toggle" aria-label="Expand">+</button>
+          </div>
+          <div class="tl-body">
+            <ul>
+              <li>Foundations in cognitive science, UX research methodology, affective computing</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Work timeline -->
+    <section id="work">
+      <h2>Work</h2>
+      <div class="timeline reveal">
+        <div class="tl-item">
+          <div class="tl-header">
+            <div class="tl-header-left">
+              <div class="tl-title">Ada Eden — AI Technical Artist / Researcher</div>
+              <div class="tl-sub">Sep 2025 – Present · Shanghai / Remote</div>
+            </div>
+            <button class="tl-toggle" aria-label="Expand">+</button>
+          </div>
+          <div class="tl-body">
+            <ul>
               <li>Prototype LLM-driven mechanics; integrate AIGC into narrative pipelines for emergent play.</li>
               <li>Build reusable ComfyUI pipelines and asset QA for prompt effectiveness.</li>
               <li>Combine AI-generated and PCG content; evaluate visual consistency and runtime performance.</li>
             </ul>
           </div>
-          <div class="item">
-            <div class="title">NetEase Games — Senior Environment/Level Artist</div>
-            <div class="sub">Dec 2023 – Sep 2025 · Hangzhou</div>
-            <ul class="sub">
+        </div>
+        <div class="tl-item">
+          <div class="tl-header">
+            <div class="tl-header-left">
+              <div class="tl-title">NetEase Games — Senior Environment/Level Artist</div>
+              <div class="tl-sub">Dec 2023 – Sep 2025 · Hangzhou</div>
+            </div>
+            <button class="tl-toggle" aria-label="Expand">+</button>
+          </div>
+          <div class="tl-body">
+            <ul>
               <li>Owned navigation routes, interaction beats, and blockouts for a large-scale MMORPG.</li>
               <li>Delivered high-fidelity modeling, texturing, lighting (incl. lightmap baking) balancing quality and performance.</li>
               <li>Cross-functional collaboration to ensure coherent art direction and smooth tech handoffs.</li>
             </ul>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="exp">
-        <h2>Research</h2>
-        <div class="list">
-          <div class="item">
-            <div class="title">Language as Reality: Co-Creative Storytelling in <em>1001 Nights</em> with Generative AI</div>
-            <div class="sub">Team Research · Jun 2023 – Jan 2025</div>
-            <ul class="sub">
-              <li>Built an LLM-driven narrative system enabling AI characters to reshape states and environments.</li>
-              <li>Designed dynamic object triggers and branching logic; ran 3 iterative workshops (N=18).</li>
-              <li>Outcome: paper accepted at CHI EA '25; insights for adaptive narrative systems.</li>
-            </ul>
-          </div>
-          <div class="item">
-            <div class="title">Surrealist Explorations in VR: Cultural Narrative Environments</div>
-            <div class="sub">Postgraduate Research · Jun 2023 – Jan 2024</div>
-            <ul class="sub">
-              <li>Prototyped immersive VR narratives combining surrealism and orientalist aesthetics.</li>
-              <li>Conducted user studies on multisensory engagement and cultural expression.</li>
-              <li>Outcome: SIGGRAPH Asia '24 Art Paper; presented in Tokyo.</li>
-            </ul>
-          </div>
-          <div class="item-light">
-            <div class="title">Serious Games for Digital Cultural Creativity in Museums</div>
-            <div class="sub">PI · National Undergraduate Innovation Program (China) · Jun 2019 – Apr 2020</div>
-          </div>
+    <section id="exp">
+      <h2>Research</h2>
+      <div class="list">
+        <div class="item reveal">
+          <div class="title">Language as Reality: Co-Creative Storytelling in <em>1001 Nights</em> with Generative AI</div>
+          <div class="sub">Team Research · Jun 2023 – Jan 2025</div>
+          <ul class="sub">
+            <li>Built an LLM-driven narrative system enabling AI characters to reshape states and environments.</li>
+            <li>Designed dynamic object triggers and branching logic; ran 3 iterative workshops (N=18).</li>
+            <li>Outcome: paper accepted at CHI EA '25; insights for adaptive narrative systems.</li>
+          </ul>
         </div>
-      </section>
-
-      <section id="scholarships" class="scholar">
-        <h2>Scholarships</h2>
-        <ul>
-          <li>Shanghai Municipal Scholarship (equivalent to National Scholarship amount, CNY 8,000)</li>
-          <li>Shanghai University Academic First-Class Scholarship — CNY 4,000</li>
-          <li>Shanghai University Innovation &amp; Entrepreneurship Scholarship — CNY 500</li>
-          <li>Shanghai University Leadership Scholarship — CNY 500</li>
-        </ul>
-      </section>
-
-      <section id="awards" class="awards">
-        <h2>Honors and Awards</h2>
-        <ul>
-          <li><span class="act">Best Innovation</span> — The Digiloong Global AI Game &amp; Application Innovation Competition</li>
-          <li><span class="act">Innovation Award Nomination</span> — The Gamescom Latam BIG Festival, São Paulo, Brazil</li>
-          <li><span class="act">A&nbsp;MAZE./Berlin — Explorer Award Nominee</span>, Berlin, Germany</li>
-          <li><span class="act">China Indie Game Awards — Best Innovation</span></li>
-          <li><span class="act">Shanghai Municipal Outstanding Graduate</span></li>
-        </ul>
-      </section>
-
-      <section id="exhibit" class="news">
-        <h2>Exhibitions and Talks</h2>
-        <ul id="exhibit-list">
-          <li><time>Aug 2025</time> <span class="act">ChinaJoy 2025</span> · Shanghai, China · Shanghai New International Expo Centre</li>
-          <li><time>May 2025</time> <span class="act">Gamescom Latam BIG Festival</span> · São Paulo, Brazil · São Paulo Expo</li>
-          <li><time>Mar 2025</time> <span class="act">GDC</span> · San Francisco, United States · Moscone Center</li>
-          <li><time>Jan 2025</time> <span class="act">The 6th "Amid Mountains and Seas" Digital Art Gallery</span> · San Francisco, United States · SFCU Art Space</li>
-          <li><time>Nov 2024</time> <span class="act">NEXT Level Festival</span> · Dortmund, Germany · Dortmunder U</li>
-          <li><time>Sep 2024</time> <span class="act">Ars Electronica 2024</span> · Linz, Austria · Ars Electronica Center</li>
-          <li><time>May 2024</time> <span class="act">Gamescom 2024</span> · Cologne, Germany · Messe Köln</li>
-          <li><time>Apr 2024</time> <span class="act">NOW PLAY THIS</span> (London Games Festival 2024) · London, United Kingdom · Somerset House</li>
-          <li><time>Nov 2023</time> <span class="act">WEPLAY 2023</span> · Shanghai, China · Shanghai Exhibition Center</li>
-          <li><time>Sep 2023</time> <span class="act">EGX 2023</span> (Eurogamer Expo) · London, United Kingdom · ExCeL London</li>
-          <li><time>Sep 2023</time> <span class="act">Ars Electronica 2023</span> · Linz, Austria · Ars Electronica Center</li>
-        </ul>
-        <button id="exhibit-toggle" class="btn-lite" aria-expanded="false">Show more ▾</button>
-      </section>
-
-      <section id="contact">
-        <h2>Contact</h2>
-        <div class="item">
-          <div class="title">📧 <a href="mailto:xiruo.wang.22@alumni.ucl.ac.uk">xiruo[dot]wang[dot]22[at]alumni[dot]ucl[dot]ac[dot]uk</a></div>
-          <div class="title" style="margin-top: 8px;">📧 <a href="mailto:xiruo.wang@163.com">xiruo[dot]wang[at]163[dot]com</a></div>
-          <div class="sub" style="margin-top: 16px;">🐙 <a href="https://github.com/xiruoplay" target="_blank" rel="noreferrer">github.com/xiruoplay</a> · 💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
+        <div class="item reveal">
+          <div class="title">Surrealist Explorations in VR: Cultural Narrative Environments</div>
+          <div class="sub">Postgraduate Research · Jun 2023 – Jan 2024</div>
+          <ul class="sub">
+            <li>Prototyped immersive VR narratives combining surrealism and orientalist aesthetics.</li>
+            <li>Conducted user studies on multisensory engagement and cultural expression.</li>
+            <li>Outcome: SIGGRAPH Asia '24 Art Paper; presented in Tokyo.</li>
+          </ul>
         </div>
-      </section>
-    </div>
+        <div class="item-light reveal">
+          <div class="title">Serious Games for Digital Cultural Creativity in Museums</div>
+          <div class="sub">PI · National Undergraduate Innovation Program (China) · Jun 2019 – Apr 2020</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="scholarships" class="scholar">
+      <h2>Scholarships</h2>
+      <ul>
+        <li class="reveal">Shanghai Municipal Scholarship (equivalent to National Scholarship amount, CNY 8,000)</li>
+        <li class="reveal">Shanghai University Academic First-Class Scholarship — CNY 4,000</li>
+        <li class="reveal">Shanghai University Innovation &amp; Entrepreneurship Scholarship — CNY 500</li>
+        <li class="reveal">Shanghai University Leadership Scholarship — CNY 500</li>
+      </ul>
+    </section>
+
+    <section id="awards" class="awards">
+      <h2>Honors and Awards</h2>
+      <ul>
+        <li class="reveal"><span class="act">Best Innovation</span> — The Digiloong Global AI Game &amp; Application Innovation Competition</li>
+        <li class="reveal"><span class="act">Innovation Award Nomination</span> — The Gamescom Latam BIG Festival, São Paulo, Brazil</li>
+        <li class="reveal"><span class="act">A&nbsp;MAZE./Berlin — Explorer Award Nominee</span>, Berlin, Germany</li>
+        <li class="reveal"><span class="act">China Indie Game Awards — Best Innovation</span></li>
+        <li class="reveal"><span class="act">Shanghai Municipal Outstanding Graduate</span></li>
+      </ul>
+    </section>
+
+    <section id="exhibit" class="news">
+      <h2>Exhibitions and Talks</h2>
+      <ul id="exhibit-list">
+        <li class="reveal"><time>Aug 2025</time> <span class="act">ChinaJoy 2025</span> · Shanghai, China · Shanghai New International Expo Centre</li>
+        <li class="reveal"><time>May 2025</time> <span class="act">Gamescom Latam BIG Festival</span> · São Paulo, Brazil · São Paulo Expo</li>
+        <li class="reveal"><time>Mar 2025</time> <span class="act">GDC</span> · San Francisco, United States · Moscone Center</li>
+        <li class="reveal"><time>Jan 2025</time> <span class="act">The 6th "Amid Mountains and Seas" Digital Art Gallery</span> · San Francisco, United States · SFCU Art Space</li>
+        <li class="reveal"><time>Nov 2024</time> <span class="act">NEXT Level Festival</span> · Dortmund, Germany · Dortmunder U</li>
+        <li class="reveal"><time>Sep 2024</time> <span class="act">Ars Electronica 2024</span> · Linz, Austria · Ars Electronica Center</li>
+        <li class="reveal"><time>May 2024</time> <span class="act">Gamescom 2024</span> · Cologne, Germany · Messe Köln</li>
+        <li class="reveal"><time>Apr 2024</time> <span class="act">NOW PLAY THIS</span> (London Games Festival 2024) · London, United Kingdom · Somerset House</li>
+        <li class="reveal"><time>Nov 2023</time> <span class="act">WEPLAY 2023</span> · Shanghai, China · Shanghai Exhibition Center</li>
+        <li class="reveal"><time>Sep 2023</time> <span class="act">EGX 2023</span> (Eurogamer Expo) · London, United Kingdom · ExCeL London</li>
+        <li class="reveal"><time>Sep 2023</time> <span class="act">Ars Electronica 2023</span> · Linz, Austria · Ars Electronica Center</li>
+      </ul>
+      <button id="exhibit-toggle" class="btn-lite" aria-expanded="false">Show more ▾</button>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <div class="item reveal">
+        <div class="title">📧 <a href="mailto:xiruo.wang.22@alumni.ucl.ac.uk">xiruo[dot]wang[dot]22[at]alumni[dot]ucl[dot]ac[dot]uk</a></div>
+        <div class="title" style="margin-top:8px;">📧 <a href="mailto:xiruo.wang@163.com">xiruo[dot]wang[at]163[dot]com</a></div>
+        <div class="sub" style="margin-top:16px;">🐙 <a href="https://github.com/xiruoplay" target="_blank" rel="noreferrer">github.com/xiruoplay</a> · 💼 <a href="https://www.linkedin.com/in/xiruowang2023" target="_blank" rel="noreferrer">LinkedIn</a></div>
+      </div>
+    </section>
   </main>
+
+  <!-- Floating mini avatar -->
+  <div class="floating-avatar" id="floating-avatar" role="button" aria-label="Back to top" tabindex="0">
+    <img src="figures/image2.png" alt="avatar" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Xiruo+Wang&size=128&background=19c8b9&color=fff';">
+  </div>
 
   <footer>
     <div class="wrap">© <span id="year"></span> xiruoplay · All rights reserved.</div>
@@ -399,128 +626,258 @@
 
   <script src="main.js"></script>
   <script>
-    setupToggleList('news-list', 'news-toggle', 3);
     setupToggleList('exhibit-list', 'exhibit-toggle', 5);
 
-    // CV dropdown — uses fixed positioning to escape overflow:auto clipping
+    // ── CV dropdown ──
     const dropdowns = document.querySelectorAll('.nav-dropdown');
     dropdowns.forEach(dd => {
       const btn = dd.querySelector('.nav-drop-btn');
       const submenu = dd.querySelector('.nav-submenu');
-
       function positionSubmenu() {
-        const rect = btn.getBoundingClientRect();
-        submenu.style.top = (rect.bottom + 6) + 'px';
-        submenu.style.left = rect.left + 'px';
+        const r = btn.getBoundingClientRect();
+        submenu.style.top = (r.bottom + 6) + 'px';
+        submenu.style.left = r.left + 'px';
       }
-
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         e.stopPropagation();
         const isOpen = !dd.classList.contains('open');
-        // Close all first
-        dropdowns.forEach(d => { d.classList.remove('open'); d.querySelector('.nav-drop-btn').setAttribute('aria-expanded', 'false'); });
-        if (isOpen) {
-          dd.classList.add('open');
-          btn.setAttribute('aria-expanded', 'true');
-          positionSubmenu();
-        }
+        dropdowns.forEach(d => { d.classList.remove('open'); d.querySelector('.nav-drop-btn').setAttribute('aria-expanded','false'); });
+        if (isOpen) { dd.classList.add('open'); btn.setAttribute('aria-expanded','true'); positionSubmenu(); }
       });
-
-      submenu.addEventListener('click', () => {
-        dd.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
-      });
+      submenu.addEventListener('click', () => { dd.classList.remove('open'); btn.setAttribute('aria-expanded','false'); });
     });
     document.addEventListener('click', () => {
-      dropdowns.forEach(dd => {
-        dd.classList.remove('open');
-        dd.querySelector('.nav-drop-btn').setAttribute('aria-expanded', 'false');
-      });
+      dropdowns.forEach(dd => { dd.classList.remove('open'); dd.querySelector('.nav-drop-btn').setAttribute('aria-expanded','false'); });
     });
 
-    // Draggable .logo tags (conference badges) — spring back after 1.5s
+    // ── Hamburger ──
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+    if (hamburger && navMenu) {
+      hamburger.addEventListener('click', () => {
+        const isOpen = hamburger.classList.toggle('open');
+        navMenu.classList.toggle('open', isOpen);
+        hamburger.setAttribute('aria-expanded', String(isOpen));
+      });
+      navMenu.addEventListener('click', e => {
+        if (e.target.tagName === 'A') { hamburger.classList.remove('open'); navMenu.classList.remove('open'); hamburger.setAttribute('aria-expanded','false'); }
+      });
+    }
+
+    // ── Nav active scroll-spy ──
+    const navLinks = document.querySelectorAll('.nav a[href^="#"]');
+    navLinks.forEach(link => { link.addEventListener('click', () => { navLinks.forEach(l => l.classList.remove('active')); link.classList.add('active'); }); });
+    const spySections = Array.from(document.querySelectorAll('section[id]'));
+    if (spySections.length) {
+      const spy = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+          }
+        });
+      }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+      spySections.forEach(s => spy.observe(s));
+    }
+
+    // ── Scroll-triggered reveal ──
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObs.unobserve(entry.target); }
+      });
+    }, { threshold: 0.08 });
+    revealEls.forEach(el => revealObs.observe(el));
+
+    // ── Floating avatar (scroll-triggered) ──
+    const floatingAvatar = document.getElementById('floating-avatar');
+    const profileCard = document.getElementById('profile-card');
+    const avatarObs = new IntersectionObserver(entries => {
+      const visible = entries[0].isIntersecting;
+      floatingAvatar.classList.toggle('visible', !visible);
+    }, { threshold: 0.1 });
+    if (profileCard) avatarObs.observe(profileCard);
+    floatingAvatar.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    floatingAvatar.addEventListener('keydown', e => { if (e.key === 'Enter') window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+    // ── Timeline expand/collapse ──
+    document.querySelectorAll('.tl-item').forEach(item => {
+      const btn = item.querySelector('.tl-toggle');
+      btn.addEventListener('click', () => { item.classList.toggle('open'); });
+      item.querySelector('.tl-header').addEventListener('click', () => { item.classList.toggle('open'); });
+    });
+
+    // ── Collected badge on awards/scholarships ──
+    (function() {
+      const collected = new WeakSet();
+      document.querySelectorAll('.awards li, .scholar li').forEach(li => {
+        li.style.position = 'relative';
+        li.style.overflow = 'visible';
+
+        const rand = (a,b) => Math.random()*(b-a)+a;
+        const burst = (el, x, y) => {
+          const rect = el.getBoundingClientRect();
+          for (let i = 0; i < 12; i++) {
+            const span = document.createElement('span');
+            span.className = 'confetti ' + (Math.random()<.5?'circle':'') + ' ' + ['c1','c2','c3'][Math.floor(Math.random()*3)];
+            span.style.cssText = `left:${x??rect.width/2}px;top:${y??rect.height/2}px`;
+            span.style.setProperty('--x','0px'); span.style.setProperty('--y','0px');
+            span.style.setProperty('--dx', rand(-60,60)+'px');
+            span.style.setProperty('--rise', rand(70,130)+'px');
+            span.style.setProperty('--rot', rand(180,540)+'deg');
+            const dur = 650 + Math.random()*500;
+            span.style.animation = `congratsUp ${dur}ms ease-out forwards`;
+            el.appendChild(span);
+            setTimeout(() => span.remove(), dur+80);
+          }
+        };
+
+        let last = 0;
+        li.addEventListener('mouseenter', e => {
+          const now = performance.now();
+          if (now - last < 1200) return;
+          last = now;
+          const rect = li.getBoundingClientRect();
+          burst(li, e.clientX - rect.left, e.clientY - rect.top);
+
+          if (!collected.has(li)) {
+            collected.add(li);
+            const badge = document.createElement('span');
+            badge.className = 'collected-badge';
+            badge.textContent = '✓ Collected!';
+            li.appendChild(badge);
+            setTimeout(() => {
+              badge.style.transition = 'opacity 0.4s ease';
+              badge.style.opacity = '0';
+              setTimeout(() => badge.remove(), 400);
+            }, 1800);
+          }
+        });
+      });
+    })();
+
+    // ── Draggable .logo tags ──
     (function() {
       function makeDraggable(el) {
-        let startX = 0, startY = 0, dx = 0, dy = 0;
-        let returnTimer = null;
-
+        let startX=0,startY=0,dx=0,dy=0,returnTimer=null;
         el.addEventListener('mousedown', onDown);
         el.addEventListener('touchstart', onDown, { passive: true });
-
         function onDown(e) {
-          if (e.type === 'mousedown' && e.button !== 0) return;
-          const isTouch = e.type === 'touchstart';
-          const cx = isTouch ? e.touches[0].clientX : e.clientX;
-          const cy = isTouch ? e.touches[0].clientY : e.clientY;
-          startX = cx - dx;
-          startY = cy - dy;
+          if (e.type==='mousedown' && e.button!==0) return;
+          const isTouch = e.type==='touchstart';
+          startX = (isTouch?e.touches[0].clientX:e.clientX) - dx;
+          startY = (isTouch?e.touches[0].clientY:e.clientY) - dy;
           if (returnTimer) clearTimeout(returnTimer);
-          el.classList.add('dragging');
-          el.classList.remove('returning');
-          el.style.transition = 'opacity 0.2s, box-shadow 0.2s';
-          el.style.position = 'relative';
-          el.style.zIndex = '50';
-
-          const onMove = (ev) => {
-            const mx = ev.touches ? ev.touches[0].clientX : ev.clientX;
-            const my = ev.touches ? ev.touches[0].clientY : ev.clientY;
-            dx = mx - startX;
-            dy = my - startY;
-            el.style.transform = `translate(${dx}px, ${dy}px)`;
+          el.classList.add('dragging'); el.classList.remove('returning');
+          el.style.transition='opacity 0.2s'; el.style.position='relative'; el.style.zIndex='50';
+          const onMove = ev => {
+            dx=(ev.touches?ev.touches[0].clientX:ev.clientX)-startX;
+            dy=(ev.touches?ev.touches[0].clientY:ev.clientY)-startY;
+            el.style.transform=`translate(${dx}px,${dy}px)`;
           };
-
-          const onUp = (ev) => {
-            const moved = Math.abs(dx) > 4 || Math.abs(dy) > 4;
+          const onUp = () => {
+            const moved=Math.abs(dx)>4||Math.abs(dy)>4;
             el.classList.remove('dragging');
-            document.removeEventListener('mousemove', onMove);
-            document.removeEventListener('mouseup', onUp);
-            document.removeEventListener('touchmove', onMove);
-            document.removeEventListener('touchend', onUp);
-
+            document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp);
+            document.removeEventListener('touchmove',onMove); document.removeEventListener('touchend',onUp);
             if (!moved) return;
-
-            // Block click-through after drag
-            const blockClick = (ev2) => { ev2.preventDefault(); ev2.stopPropagation(); };
-            el.addEventListener('click', blockClick, { once: true });
-
-            returnTimer = setTimeout(() => {
-              el.classList.add('returning');
-              el.style.transition = '';
-              el.style.transform = 'translate(0,0)';
-              dx = 0; dy = 0;
-              setTimeout(() => {
-                el.classList.remove('returning');
-                el.style.zIndex = '';
-                el.style.position = '';
-              }, 600);
-            }, 1500);
+            el.addEventListener('click', ev2=>{ev2.preventDefault();ev2.stopPropagation();},{once:true});
+            returnTimer=setTimeout(()=>{
+              el.classList.add('returning'); el.style.transition='';
+              el.style.transform='translate(0,0)'; dx=0; dy=0;
+              setTimeout(()=>{el.classList.remove('returning');el.style.zIndex='';el.style.position='';},600);
+            },1500);
           };
-
-          document.addEventListener('mousemove', onMove);
-          document.addEventListener('mouseup', onUp);
-          document.addEventListener('touchmove', onMove, { passive: true });
-          document.addEventListener('touchend', onUp);
+          document.addEventListener('mousemove',onMove);
+          document.addEventListener('mouseup',onUp);
+          document.addEventListener('touchmove',onMove,{passive:true});
+          document.addEventListener('touchend',onUp);
         }
       }
-
       document.querySelectorAll('.logo').forEach(makeDraggable);
     })();
 
-    // Load featured portfolio items
+    // ── Typewriter effect ──
+    (function() {
+      const el = document.getElementById('hero-tagline');
+      if (!el) return;
+      const text = 'AI Technical Artist crafting\ngames, narratives & interactive worlds';
+      let i = 0;
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor-blink';
+      el.appendChild(cursor);
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          const ch = text[i];
+          cursor.insertAdjacentText('beforebegin', ch === '\n' ? '' : ch);
+          if (ch === '\n') cursor.insertAdjacentHTML('beforebegin', '<br>');
+          i++;
+        } else {
+          clearInterval(interval);
+          setTimeout(() => cursor.remove(), 2000);
+        }
+      }, 38);
+    })();
+
+    // ── Cursor particle trail ──
+    (function() {
+      const canvas = document.getElementById('cursor-canvas');
+      const ctx = canvas.getContext('2d');
+      let W = canvas.width = window.innerWidth;
+      let H = canvas.height = window.innerHeight;
+      window.addEventListener('resize', () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; });
+
+      const emojis = ['🍃','🌿','✨','⭐','🍀','🌸'];
+      const particles = [];
+
+      document.addEventListener('mousemove', e => {
+        if (Math.random() > 0.35) return;
+        particles.push({
+          x: e.clientX, y: e.clientY,
+          emoji: emojis[Math.floor(Math.random()*emojis.length)],
+          size: 12 + Math.random()*10,
+          life: 1,
+          vx: (Math.random()-0.5)*1.5,
+          vy: -1 - Math.random()*1.5,
+          rot: Math.random()*360,
+          rotV: (Math.random()-0.5)*4
+        });
+      });
+
+      function loop() {
+        ctx.clearRect(0, 0, W, H);
+        for (let i = particles.length-1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx; p.y += p.vy;
+          p.rot += p.rotV;
+          p.life -= 0.022;
+          if (p.life <= 0) { particles.splice(i,1); continue; }
+          ctx.save();
+          ctx.globalAlpha = p.life;
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot * Math.PI / 180);
+          ctx.font = p.size + 'px serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(p.emoji, 0, 0);
+          ctx.restore();
+        }
+        requestAnimationFrame(loop);
+      }
+      loop();
+    })();
+
+    // ── Featured portfolio ──
     fetch('portfolio.json')
       .then(r => r.json())
       .then(data => {
         const featured = data.filter(p => p.featured);
         const grid = document.getElementById('featured-grid');
-        if (!grid || !featured.length) {
-          const sec = document.getElementById('featured-portfolio');
-          if (sec) sec.style.display = 'none';
-          return;
-        }
-        grid.innerHTML = featured.slice(0, 2).map(p => `
+        if (!grid || !featured.length) { document.getElementById('featured-portfolio').style.display='none'; return; }
+        grid.innerHTML = featured.slice(0,2).map(p => `
           <a href="portfolio.html" class="portfolio-card featured" style="text-decoration:none;">
             <div class="portfolio-card-cover">
-              <img src="${p.cover}" alt="${p.title}" onerror="this.onerror=null; this.src='https://placehold.co/600x360/f0e8d8/794f27?text=${encodeURIComponent(p.title)}'">
+              <img src="${p.cover}" alt="${p.title}" onerror="this.onerror=null;this.src='https://placehold.co/600x360/f0e8d8/794f27?text=${encodeURIComponent(p.title)}'">
             </div>
             <div class="portfolio-card-body">
               <div class="portfolio-card-title">${p.title}</div>
@@ -531,10 +888,7 @@
             </div>
           </a>`).join('');
       })
-      .catch(() => {
-        const sec = document.getElementById('featured-portfolio');
-        if (sec) sec.style.display = 'none';
-      });
+      .catch(() => { const s=document.getElementById('featured-portfolio'); if(s) s.style.display='none'; });
   </script>
 </body>
 </html>
