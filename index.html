@@ -29,21 +29,112 @@
     .sidebar::-webkit-scrollbar-track { background: transparent; }
     .sidebar::-webkit-scrollbar-thumb { background-color: transparent; border-radius: 4px; }
     .sidebar:hover::-webkit-scrollbar-thumb { background-color: var(--animal-border-light); }
-    .avatar {
-      border-radius: 50%; overflow: hidden;
-      border: 4px solid var(--animal-border-light);
-      background: var(--animal-bg-card);
-      width: 66%; max-width: 180px; aspect-ratio: 1/1;
+
+    /* Avatar swap on hover */
+    .avatar-wrap {
+      position: relative;
+      width: 66%; max-width: 180px;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
       box-shadow: 0 4px 0 0 #bdaea0;
-      transition: all var(--animal-duration-base) var(--animal-ease);
+      transition: transform var(--animal-duration-base) var(--animal-ease),
+                  box-shadow var(--animal-duration-base) var(--animal-ease);
+      /* Ensure height is computed from aspect-ratio */
+      overflow: hidden;
     }
-    .avatar:hover {
+    .avatar-wrap:hover {
       transform: translateY(-3px);
       box-shadow: 0 7px 0 0 #bdaea0;
     }
+    .avatar {
+      border-radius: 50%;
+      border: 4px solid var(--animal-border-light);
+      background: var(--animal-bg-card);
+      width: 100%; height: 100%;
+      object-fit: cover;
+      position: absolute; inset: 0;
+      transition: opacity 0.35s ease;
+      display: block;
+    }
+    .avatar-default { opacity: 1; }
+    .avatar-hover { opacity: 0; }
+    .avatar-wrap:hover .avatar-default { opacity: 0; }
+    .avatar-wrap:hover .avatar-hover { opacity: 1; }
+
     .name { font-size: 28px; font-weight: 900; margin: var(--animal-spacing-lg) 0 6px; color: var(--animal-text); }
     .title-role { color: var(--animal-text-body); margin: 0 0 var(--animal-spacing-lg); font-size: 15px; font-weight: 600; }
     .meta { display: grid; gap: var(--animal-spacing-md); margin: var(--animal-spacing-lg) 0; font-size: var(--animal-font-size-base); }
+
+    /* CV dropdown */
+    .nav-dropdown { position: relative; }
+    .nav-drop-btn {
+      padding: 6px 14px;
+      font-family: var(--animal-font-family);
+      font-weight: 700;
+      font-size: var(--animal-font-size-base);
+      color: var(--animal-text-brown);
+      background: transparent;
+      border: none;
+      border-radius: var(--animal-radius-pill);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--animal-duration-base) var(--animal-ease);
+    }
+    .nav-drop-btn:hover, .nav-dropdown.open .nav-drop-btn {
+      background: var(--animal-primary-bg);
+      color: var(--animal-primary-active);
+    }
+    .nav-submenu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      background: var(--animal-bg-card);
+      border: 2.5px solid var(--animal-border-light);
+      border-radius: var(--animal-radius-lg);
+      box-shadow: 0 6px 0 0 #bdaea0, var(--animal-shadow-lg);
+      padding: 8px;
+      list-style: none;
+      min-width: 150px;
+      z-index: 100;
+      animation: animal-zoom-in 0.2s ease;
+    }
+    .nav-dropdown.open .nav-submenu { display: block; }
+    .nav-submenu li a {
+      display: block;
+      padding: 8px 16px;
+      border-radius: var(--animal-radius-base);
+      font-weight: 700;
+      font-size: var(--animal-font-size-base);
+      color: var(--animal-text-brown);
+      white-space: nowrap;
+      transition: all var(--animal-duration-base) var(--animal-ease);
+    }
+    .nav-submenu li a:hover {
+      background: var(--animal-primary-bg);
+      color: var(--animal-primary-active);
+    }
+    /* Mobile: submenu becomes inline */
+    @media (max-width: 600px) {
+      .nav-submenu {
+        position: static;
+        box-shadow: none;
+        border: none;
+        padding: 0 0 0 16px;
+        animation: none;
+        background: transparent;
+      }
+      .nav-dropdown.open .nav-submenu { display: block; }
+      .nav-drop-btn { width: 100%; text-align: center; }
+    }
+
+    /* Draggable nav tags */
+    .toc li { user-select: none; }
+    .toc li a, .nav-drop-btn { cursor: grab; }
+    .toc li.dragging a, .toc li.dragging .nav-drop-btn { cursor: grabbing; opacity: 0.7; }
+    .toc li.returning a, .toc li.returning .nav-drop-btn {
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
   </style>
 </head>
 <body>
@@ -58,11 +149,17 @@
           <li><a href="#aboutme">About</a></li>
           <li><a href="portfolio.html">Portfolio</a></li>
           <li><a href="#pubs">Publications</a></li>
-          <li><a href="#edu">Education</a></li>
-          <li><a href="#work">Work</a></li>
-          <li><a href="#exp">Research</a></li>
-          <li><a href="#awards">Awards</a></li>
-          <li><a href="#exhibit">Exhibitions</a></li>
+          <li class="nav-dropdown">
+            <button class="nav-drop-btn" aria-expanded="false">CV ▾</button>
+            <ul class="nav-submenu">
+              <li><a href="#edu">Education</a></li>
+              <li><a href="#work">Work</a></li>
+              <li><a href="#exp">Research</a></li>
+              <li><a href="#awards">Awards</a></li>
+              <li><a href="#exhibit">Exhibitions</a></li>
+              <li><a href="#scholarships">Scholarships</a></li>
+            </ul>
+          </li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
@@ -81,7 +178,10 @@
 
   <main class="wrap">
     <aside class="sidebar" id="about">
-      <img class="avatar" src="figures/image1.jpg" alt="avatar of Xiruo Wang" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Xiruo+Wang&size=400&background=19c8b9&color=fff';"/>
+      <div class="avatar-wrap">
+        <img class="avatar avatar-default" src="figures/image2.jpg" alt="avatar of Xiruo Wang" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Xiruo+Wang&size=400&background=19c8b9&color=fff';"/>
+        <img class="avatar avatar-hover" src="figures/image1.jpg" alt="avatar of Xiruo Wang" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Xiruo+Wang&size=400&background=19c8b9&color=fff';"/>
+      </div>
       <div class="name"><img src="figures/name.png" alt="Xiruo Wang" onerror="this.outerHTML='<span>Xiruo Wang</span>'" style="max-height: 40px;"></div>
       <div class="title-role">AI Technical Artist · Games & HCI</div>
       <div class="meta">
@@ -305,6 +405,93 @@
   <script>
     setupToggleList('news-list', 'news-toggle', 3);
     setupToggleList('exhibit-list', 'exhibit-toggle', 5);
+
+    // CV dropdown
+    const dropdowns = document.querySelectorAll('.nav-dropdown');
+    dropdowns.forEach(dd => {
+      const btn = dd.querySelector('.nav-drop-btn');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = dd.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(isOpen));
+      });
+      dd.querySelector('.nav-submenu').addEventListener('click', () => {
+        dd.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+    document.addEventListener('click', () => {
+      dropdowns.forEach(dd => {
+        dd.classList.remove('open');
+        dd.querySelector('.nav-drop-btn').setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Draggable nav tags — drag freely, spring back after 1.5s
+    (function() {
+      const tags = document.querySelectorAll('.toc > li');
+      tags.forEach(li => {
+        let startX = 0, startY = 0, dx = 0, dy = 0;
+        let returnTimer = null;
+
+        function onDown(e) {
+          // Don't drag if clicking a link/button for navigation
+          if (e.type === 'mousedown' && e.button !== 0) return;
+          const isTouch = e.type === 'touchstart';
+          const cx = isTouch ? e.touches[0].clientX : e.clientX;
+          const cy = isTouch ? e.touches[0].clientY : e.clientY;
+          startX = cx - dx;
+          startY = cy - dy;
+          li.classList.add('dragging');
+          li.classList.remove('returning');
+          if (returnTimer) clearTimeout(returnTimer);
+          li.style.transition = 'none';
+          li.style.position = 'relative';
+          li.style.zIndex = '20';
+
+          const onMove = (ev) => {
+            const mx = ev.touches ? ev.touches[0].clientX : ev.clientX;
+            const my = ev.touches ? ev.touches[0].clientY : ev.clientY;
+            dx = mx - startX;
+            dy = my - startY;
+            li.style.transform = `translate(${dx}px, ${dy}px)`;
+          };
+          const onUp = (ev) => {
+            // If barely moved, treat as click — do nothing extra
+            const moved = Math.abs(dx) > 4 || Math.abs(dy) > 4;
+            li.classList.remove('dragging');
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            document.removeEventListener('touchmove', onMove);
+            document.removeEventListener('touchend', onUp);
+
+            if (!moved) return;
+
+            // Prevent the click from navigating
+            ev.preventDefault && ev.preventDefault();
+
+            // Spring back after 1.5s
+            returnTimer = setTimeout(() => {
+              li.classList.add('returning');
+              li.style.transition = '';
+              li.style.transform = 'translate(0,0)';
+              dx = 0; dy = 0;
+              setTimeout(() => {
+                li.classList.remove('returning');
+                li.style.zIndex = '';
+              }, 600);
+            }, 1500);
+          };
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
+          document.addEventListener('touchmove', onMove, { passive: true });
+          document.addEventListener('touchend', onUp);
+        }
+
+        li.addEventListener('mousedown', onDown);
+        li.addEventListener('touchstart', onDown, { passive: true });
+      });
+    })();
 
     // Load featured portfolio items
     fetch('portfolio.json')

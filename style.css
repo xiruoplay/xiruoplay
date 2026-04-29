@@ -635,7 +635,7 @@ body::before {
     padding-right: 0;
     text-align: center;
   }
-  .sidebar .avatar { margin: 0 auto; }
+  .sidebar .avatar-wrap, .sidebar .avatar { margin: 0 auto; }
   .sidebar .name { text-align: center; }
   .sidebar .name img { margin: 0 auto; }
   .sidebar .title-role { text-align: center; }
@@ -684,7 +684,7 @@ body::before {
   }
   .name { font-size: 22px; }
 
-  .avatar { max-width: 120px; }
+      .avatar-wrap, .avatar { max-width: 120px; }
 
   .item { padding: var(--animal-spacing-lg); border-radius: 16px; }
   .news li { padding: var(--animal-spacing-md) var(--animal-spacing-lg); border-radius: 16px; }
