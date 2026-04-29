@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio | xiruoplay</title>
+  <meta name="description" content="Portfolio — games, art, and research projects by Xiruo Wang." />
+  <meta property="og:title" content="Portfolio — Xiruo Wang" />
+  <meta property="og:description" content="Games, art, and research projects." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏝️</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&family=M+PLUS+Rounded+1c:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand"><a href="index.html">🏝️ xiruoplay</a></div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-menu">
+        <ul class="toc">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="portfolio.html" class="active">Portfolio</a></li>
+          <li><a href="index.html#pubs">Publications</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap" style="padding-top: 40px; padding-bottom: 60px;">
+    <h2 style="margin-bottom: var(--animal-spacing-xl);">Portfolio</h2>
+
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="game">Games</button>
+      <button class="filter-pill" data-filter="art">Art</button>
+      <button class="filter-pill" data-filter="research">Research</button>
+    </div>
+
+    <div class="portfolio-grid" id="portfolio-grid"></div>
+  </div>
+
+  <footer>
+    <div class="wrap">© <span id="year"></span> xiruoplay · All rights reserved.</div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script>
+    let allProjects = [];
+
+    function renderGrid(filter) {
+      const grid = document.getElementById('portfolio-grid');
+      const items = filter === 'all' ? allProjects : allProjects.filter(p => p.category === filter);
+
+      const featured = items.filter(p => p.featured);
+      const rest = items.filter(p => !p.featured);
+      const sorted = [...featured, ...rest];
+
+      grid.innerHTML = sorted.map(p => `
+        <div class="portfolio-card ${p.featured ? 'featured' : ''}" data-id="${p.id}">
+          <div class="portfolio-card-cover">
+            <img src="${p.cover}" alt="${p.title}" onerror="this.onerror=null; this.src='https://placehold.co/600x360/f0e8d8/794f27?text=${encodeURIComponent(p.title)}'">
+          </div>
+          <div class="portfolio-card-body">
+            <div class="portfolio-card-title">${p.title}</div>
+            <div class="portfolio-card-meta">
+              <span class="portfolio-card-tag ${p.category}">${p.category}</span>
+              <span>${p.date}</span>
+            </div>
+          </div>
+        </div>`).join('');
+
+      grid.querySelectorAll('.portfolio-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const proj = allProjects.find(p => p.id === card.dataset.id);
+          if (proj) showDetail(proj);
+        });
+      });
+    }
+
+    function showDetail(p) {
+      let body = '';
+
+      if (p.video) {
+        body += `<iframe class="modal-video" src="${p.video}" frameborder="0" allowfullscreen></iframe>`;
+      }
+
+      if (p.images && p.images.length) {
+        body += '<div class="modal-gallery">';
+        p.images.forEach(img => {
+          body += `<img src="${img}" alt="${p.title}" onerror="this.style.display='none'">`;
+        });
+        body += '</div>';
+      }
+
+      body += `<p style="margin-bottom: var(--animal-spacing-xl);">${p.description}</p>`;
+
+      if (p.tags && p.tags.length) {
+        body += '<div class="modal-tags">';
+        p.tags.forEach(t => { body += `<span class="modal-tag">${t}</span>`; });
+        body += '</div>';
+      }
+
+      if (p.links && p.links.length) {
+        body += '<div class="modal-links">';
+        p.links.forEach(l => {
+          body += `<a href="${l.url}" target="_blank" rel="noreferrer" class="animal-btn animal-btn-primary">${l.label}</a>`;
+        });
+        body += '</div>';
+      }
+
+      openModal(p.title, body);
+    }
+
+    // Filter bar
+    document.getElementById('filter-bar').addEventListener('click', (e) => {
+      const pill = e.target.closest('.filter-pill');
+      if (!pill) return;
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      renderGrid(pill.dataset.filter);
+    });
+
+    // Load data
+    fetch('portfolio.json')
+      .then(r => r.json())
+      .then(data => {
+        allProjects = data;
+        renderGrid('all');
+      })
+      .catch(() => {
+        document.getElementById('portfolio-grid').innerHTML =
+          '<p style="text-align:center; grid-column: 1/-1;">No projects yet. Use admin.html to add your first project.</p>';
+      });
+  </script>
+</body>
+</html>

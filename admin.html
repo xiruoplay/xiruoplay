@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow">
+  <title>Portfolio Admin | xiruoplay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&family=M+PLUS+Rounded+1c:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-wrap { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+    .admin-title { font-size: 28px; font-weight: 900; color: var(--animal-text); margin-bottom: 8px; }
+    .admin-sub { color: var(--animal-text-body); font-weight: 500; margin-bottom: 32px; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+      display: block; font-weight: 700; font-size: var(--animal-font-size-base);
+      color: var(--animal-text-brown); margin-bottom: 6px;
+    }
+    .form-input, .form-textarea, .form-select {
+      width: 100%; padding: 10px 18px;
+      background: var(--animal-bg-card);
+      border: 2.5px solid var(--animal-border-light);
+      border-radius: var(--animal-radius-pill);
+      box-shadow: 0 3px 0 0 var(--animal-border-input);
+      font-family: var(--animal-font-family);
+      font-size: var(--animal-font-size-base);
+      color: var(--animal-text-brown);
+      outline: none;
+      transition: all var(--animal-duration-base) var(--animal-ease);
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--animal-primary);
+      box-shadow: 0 3px 0 0 var(--animal-primary-active);
+    }
+    .form-textarea {
+      border-radius: var(--animal-radius-base);
+      min-height: 100px; resize: vertical;
+    }
+    .form-select { cursor: pointer; }
+    .form-hint { font-size: var(--animal-font-size-sm); color: var(--animal-text-secondary); margin-top: 4px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+    .form-check {
+      display: flex; align-items: center; gap: 10px; cursor: pointer;
+      font-weight: 600; color: var(--animal-text-brown);
+    }
+    .form-check input[type="checkbox"] {
+      width: 20px; height: 20px; accent-color: var(--animal-primary);
+    }
+
+    /* Links editor */
+    .links-list { display: grid; gap: 8px; margin-bottom: 8px; }
+    .link-row { display: flex; gap: 8px; align-items: center; }
+    .link-row input { flex: 1; }
+    .link-remove {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2px solid var(--animal-error); background: transparent;
+      color: var(--animal-error); font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .link-remove:hover { background: var(--animal-error); color: #fff; }
+
+    /* Project list */
+    .project-list { margin-bottom: 32px; }
+    .project-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px;
+      background: var(--animal-bg-card);
+      border-radius: var(--animal-radius-base);
+      box-shadow: var(--animal-shadow-sm);
+      margin-bottom: 8px;
+      font-weight: 600; color: var(--animal-text-brown);
+    }
+    .project-item-actions { display: flex; gap: 8px; }
+
+    .toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      padding: 12px 32px;
+      background: var(--animal-primary);
+      color: #fff; font-weight: 700; font-family: var(--animal-font-family);
+      border-radius: var(--animal-radius-pill);
+      box-shadow: 0 4px 0 0 var(--animal-primary-active);
+      z-index: 999;
+      animation: animal-zoom-in 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand"><a href="index.html">🏝️ xiruoplay</a></div>
+      <nav>
+        <ul class="toc">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="admin.html" class="active">Admin</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="admin-wrap">
+    <div class="admin-title">Portfolio Manager</div>
+    <div class="admin-sub">Add, edit, and export your portfolio data. Changes are saved to browser storage until you export.</div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <button class="animal-btn animal-btn-primary" id="btn-new">+ New Project</button>
+      <label class="animal-btn" style="cursor:pointer;">
+        Import JSON
+        <input type="file" accept=".json" id="btn-import" style="display:none;">
+      </label>
+      <button class="animal-btn" id="btn-export">Export JSON</button>
+    </div>
+
+    <!-- Existing projects list -->
+    <div class="project-list" id="project-list"></div>
+
+    <!-- Edit form (hidden until needed) -->
+    <div id="edit-form" style="display:none;">
+      <h2 style="margin-bottom: 24px;" id="form-title">New Project</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Title *</label>
+          <input class="form-input" id="f-title" placeholder="Project name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ID (URL-safe) *</label>
+          <input class="form-input" id="f-id" placeholder="my-project">
+          <div class="form-hint">Auto-generated from title, or set manually</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Category *</label>
+          <select class="form-select" id="f-category">
+            <option value="game">Game</option>
+            <option value="art">Art</option>
+            <option value="research">Research</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input class="form-input" id="f-date" placeholder="2024-10" type="month">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="f-desc" placeholder="A brief description of the project..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Cover Image Path</label>
+        <input class="form-input" id="f-cover" placeholder="figures/portfolio/my-project-cover.jpg">
+        <div class="form-hint">Place image in figures/portfolio/ then enter the relative path here</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Additional Image Paths (comma-separated)</label>
+        <input class="form-input" id="f-images" placeholder="figures/portfolio/img1.jpg, figures/portfolio/img2.jpg">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Video Embed URL</label>
+        <input class="form-input" id="f-video" placeholder="https://www.youtube.com/embed/...">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tags (comma-separated)</label>
+        <input class="form-input" id="f-tags" placeholder="AI, Unity, narrative">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">External Links</label>
+        <div class="links-list" id="links-list"></div>
+        <button class="animal-btn" id="btn-add-link" type="button" style="margin-top: 8px;">+ Add Link</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-check">
+          <input type="checkbox" id="f-featured">
+          Featured (shows on homepage)
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 32px;">
+        <button class="animal-btn animal-btn-primary" id="btn-save">Save Project</button>
+        <button class="animal-btn" id="btn-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="wrap">© <span id="year"></span> xiruoplay · Portfolio Admin</div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    let projects = [];
+    let editingIndex = -1;
+
+    const STORAGE_KEY = 'xiruoplay_portfolio';
+
+    function loadFromStorage() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try { projects = JSON.parse(saved); } catch(e) { projects = []; }
+      }
+    }
+
+    function saveToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+    }
+
+    function toast(msg) {
+      const el = document.createElement('div');
+      el.className = 'toast';
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2000);
+    }
+
+    function slugify(text) {
+      return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    // Render project list
+    function renderList() {
+      const list = document.getElementById('project-list');
+      if (!projects.length) {
+        list.innerHTML = '<p style="color: var(--animal-text-body);">No projects yet. Click "+ New Project" to start.</p>';
+        return;
+      }
+      list.innerHTML = projects.map((p, i) => `
+        <div class="project-item">
+          <span>${p.featured ? '⭐ ' : ''}${p.title} <span style="color:var(--animal-text-secondary); font-weight:500;">(${p.category})</span></span>
+          <div class="project-item-actions">
+            <button class="animal-btn" onclick="editProject(${i})" style="height:32px; padding:0 14px; font-size:12px;">Edit</button>
+            <button class="link-remove" onclick="deleteProject(${i})" title="Delete">&times;</button>
+          </div>
+        </div>`).join('');
+    }
+
+    // Links management
+    function renderLinks(links) {
+      const container = document.getElementById('links-list');
+      container.innerHTML = (links || []).map((l, i) => `
+        <div class="link-row">
+          <input class="form-input link-label" placeholder="Label (e.g. Steam)" value="${l.label || ''}" style="border-radius: var(--animal-radius-sm);">
+          <input class="form-input link-url" placeholder="https://..." value="${l.url || ''}" style="border-radius: var(--animal-radius-sm);">
+          <button class="link-remove" onclick="this.parentElement.remove()" type="button">&times;</button>
+        </div>`).join('');
+    }
+
+    function getLinks() {
+      return Array.from(document.querySelectorAll('.link-row')).map(row => ({
+        label: row.querySelector('.link-label').value.trim(),
+        url: row.querySelector('.link-url').value.trim()
+      })).filter(l => l.label && l.url);
+    }
+
+    document.getElementById('btn-add-link').addEventListener('click', () => {
+      const container = document.getElementById('links-list');
+      const row = document.createElement('div');
+      row.className = 'link-row';
+      row.innerHTML = `
+        <input class="form-input link-label" placeholder="Label" style="border-radius: var(--animal-radius-sm);">
+        <input class="form-input link-url" placeholder="https://..." style="border-radius: var(--animal-radius-sm);">
+        <button class="link-remove" onclick="this.parentElement.remove()" type="button">&times;</button>`;
+      container.appendChild(row);
+    });
+
+    // Auto-generate ID from title
+    document.getElementById('f-title').addEventListener('input', (e) => {
+      const idField = document.getElementById('f-id');
+      if (!idField.dataset.manual) {
+        idField.value = slugify(e.target.value);
+      }
+    });
+    document.getElementById('f-id').addEventListener('input', () => {
+      document.getElementById('f-id').dataset.manual = '1';
+    });
+
+    // Show/hide form
+    function showForm(title) {
+      document.getElementById('form-title').textContent = title;
+      document.getElementById('edit-form').style.display = 'block';
+      document.getElementById('edit-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function hideForm() {
+      document.getElementById('edit-form').style.display = 'none';
+      clearForm();
+      editingIndex = -1;
+    }
+
+    function clearForm() {
+      ['f-title', 'f-id', 'f-desc', 'f-cover', 'f-images', 'f-video', 'f-tags', 'f-date'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('f-category').value = 'game';
+      document.getElementById('f-featured').checked = false;
+      document.getElementById('f-id').removeAttribute('data-manual');
+      renderLinks([]);
+    }
+
+    function fillForm(p) {
+      document.getElementById('f-title').value = p.title || '';
+      document.getElementById('f-id').value = p.id || '';
+      document.getElementById('f-id').dataset.manual = '1';
+      document.getElementById('f-category').value = p.category || 'game';
+      document.getElementById('f-date').value = p.date || '';
+      document.getElementById('f-desc').value = p.description || '';
+      document.getElementById('f-cover').value = p.cover || '';
+      document.getElementById('f-images').value = (p.images || []).join(', ');
+      document.getElementById('f-video').value = p.video || '';
+      document.getElementById('f-tags').value = (p.tags || []).join(', ');
+      document.getElementById('f-featured').checked = !!p.featured;
+      renderLinks(p.links || []);
+    }
+
+    function getFormData() {
+      const title = document.getElementById('f-title').value.trim();
+      const id = document.getElementById('f-id').value.trim();
+      if (!title || !id) { toast('Title and ID are required'); return null; }
+      return {
+        id,
+        title,
+        category: document.getElementById('f-category').value,
+        description: document.getElementById('f-desc').value.trim(),
+        cover: document.getElementById('f-cover').value.trim(),
+        images: document.getElementById('f-images').value.split(',').map(s => s.trim()).filter(Boolean),
+        video: document.getElementById('f-video').value.trim(),
+        links: getLinks(),
+        tags: document.getElementById('f-tags').value.split(',').map(s => s.trim()).filter(Boolean),
+        date: document.getElementById('f-date').value,
+        featured: document.getElementById('f-featured').checked
+      };
+    }
+
+    // Actions
+    document.getElementById('btn-new').addEventListener('click', () => {
+      editingIndex = -1;
+      clearForm();
+      showForm('New Project');
+    });
+
+    document.getElementById('btn-save').addEventListener('click', () => {
+      const data = getFormData();
+      if (!data) return;
+      if (editingIndex >= 0) {
+        projects[editingIndex] = data;
+        toast('Project updated');
+      } else {
+        projects.push(data);
+        toast('Project added');
+      }
+      saveToStorage();
+      renderList();
+      hideForm();
+    });
+
+    document.getElementById('btn-cancel').addEventListener('click', hideForm);
+
+    window.editProject = function(i) {
+      editingIndex = i;
+      fillForm(projects[i]);
+      showForm('Edit Project');
+    };
+
+    window.deleteProject = function(i) {
+      if (confirm('Delete "' + projects[i].title + '"?')) {
+        projects.splice(i, 1);
+        saveToStorage();
+        renderList();
+        toast('Project deleted');
+      }
+    };
+
+    // Import
+    document.getElementById('btn-import').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const data = JSON.parse(ev.target.result);
+          if (Array.isArray(data)) {
+            projects = data;
+            saveToStorage();
+            renderList();
+            toast('Imported ' + data.length + ' projects');
+          } else {
+            toast('Invalid format: expected an array');
+          }
+        } catch(err) {
+          toast('Failed to parse JSON');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    // Export
+    document.getElementById('btn-export').addEventListener('click', () => {
+      const json = JSON.stringify(projects, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'portfolio.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast('portfolio.json downloaded');
+    });
+
+    // Init
+    loadFromStorage();
+    if (!projects.length) {
+      fetch('portfolio.json')
+        .then(r => r.json())
+        .then(data => {
+          if (Array.isArray(data) && data.length) {
+            projects = data;
+            saveToStorage();
+            renderList();
+          }
+        })
+        .catch(() => {});
+    }
+    renderList();
+  </script>
+</body>
+</html>

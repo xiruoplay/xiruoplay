@@ -1,0 +1,45 @@
+[
+  {
+    "id": "1001nights",
+    "title": "1001 Nights",
+    "category": "game",
+    "description": "An AI-native narrative game where language reshapes reality. Players co-create stories with AI characters who dynamically alter game states and environments through conversation. Featured at ChinaJoy 2025, A MAZE./Berlin, Ars Electronica, and more.",
+    "cover": "figures/portfolio/1001nights-cover.jpg",
+    "images": [],
+    "video": "",
+    "links": [
+      { "label": "Steam", "url": "https://store.steampowered.com/app/1001nights" }
+    ],
+    "tags": ["AI", "narrative", "Unity", "LLM"],
+    "date": "2024-10",
+    "featured": true
+  },
+  {
+    "id": "one-kiss",
+    "title": "One Kiss: Emojis as Agents of Genre Flux",
+    "category": "research",
+    "description": "A generative comics system where emojis act as genre-transforming agents. Accepted at ACM CHI EA 2026, Barcelona.",
+    "cover": "figures/figure1.png",
+    "images": [],
+    "video": "",
+    "links": [
+      { "label": "DOI", "url": "https://doi.org/10.1145/3772363.3798758" }
+    ],
+    "tags": ["generative AI", "comics", "emoji", "CHI"],
+    "date": "2026-04",
+    "featured": true
+  },
+  {
+    "id": "chinoiserie-vr",
+    "title": "Surrealist VR: 17th-Century European Fascination with China",
+    "category": "art",
+    "description": "An immersive VR narrative environment exploring surrealism and orientalist aesthetics. Presented as Art Paper at SIGGRAPH Asia 2024, Tokyo.",
+    "cover": "figures/sig.jpg",
+    "images": [],
+    "video": "",
+    "links": [],
+    "tags": ["VR", "narrative", "surrealism", "SIGGRAPH Asia"],
+    "date": "2024-12",
+    "featured": false
+  }
+]
